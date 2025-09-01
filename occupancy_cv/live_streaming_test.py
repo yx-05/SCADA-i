@@ -1,17 +1,14 @@
 import cv2
 from ultralytics import YOLO
 import numpy as np
-import json
 
-model = YOLO("yolo11x.pt")
+model = YOLO("yolo11l.pt")
 print(model.names)
 
-# Save data into a json file
-with open("data.json", "w") as f:
-    json.dump({}, f)
+# video_path = "seatoccupancytest.mp4"
+# output_path = "output_with_polygons.mp4"
 
-video_path = "occupancy_cv\seatoccupancytest.mp4"
-output_path = "output_with_polygons.mp4"
+url = "http://192.168.0.172:4747/video"
 
 DESK_ROIS = {
     'Desk 1': np.array([
@@ -31,26 +28,26 @@ DESK_ROIS = {
     ], np.int32)
 }
 
-cap = cv2.VideoCapture(video_path)
+# Smoothing memory
+desk_last_seen = {seat: -999 for seat in DESK_ROIS}
+SMOOTH_FRAMES = 5
+
+cap = cv2.VideoCapture(url, cv2.CAP_FFMPEG)
 frame_index = 0
 
 if not cap.isOpened():
-    print(f"Error: Could not open file {video_path}")
+    print(f"Error: Could not open file {url}")
     exit()
     
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 fps = int(cap.get(cv2.CAP_PROP_FPS))
 
-# Smoothing memory
-desk_last_seen = {seat: -999 for seat in DESK_ROIS}
-SMOOTH_FRAMES = fps * 10
-
 # Detection internal
 DETECTION_INTERVAL = fps * 1
 
-fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
+# fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+# out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -59,7 +56,6 @@ while cap.isOpened():
     
     desk_status = {desk_name: 'Vacant' for desk_name in DESK_ROIS}
     
-    results = []
     if frame_index % DETECTION_INTERVAL == 0:
         results = model(frame, conf=0.1)
     
@@ -81,25 +77,20 @@ while cap.isOpened():
                             desk_last_seen[desk_name] = frame_index 
                             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
                             break
-    for desk_name in DESK_ROIS:
-        if frame_index - desk_last_seen[desk_name] <= SMOOTH_FRAMES:
-            desk_status[desk_name] = "Occupied"
+                        else:
+                            if frame_index - desk_last_seen[desk_name] <= SMOOTH_FRAMES:
+                                desk_status[desk_name] = "Occupied"
                 
-    for desk_name, polygon in DESK_ROIS.items():
-        status = desk_status[desk_name]
-        color = (0, 255, 0) if status == 'Vacant' else (0, 0, 255)
-    
-        cv2.polylines(frame, [polygon], isClosed=True, color=color, thickness=2)
-    
-        text_pos = (polygon[0][0], polygon[0][1] - 10)
-        cv2.putText(frame, f'{desk_name}: {status}', text_pos, cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
-    
-                # Save to a file
-    with open("data.json", "w") as f:
-        json.dump(desk_status, f, indent=4)
-
+            for desk_name, polygon in DESK_ROIS.items():
+                status = desk_status[desk_name]
+                color = (0, 255, 0) if status == 'Vacant' else (0, 0, 255)
             
-    out.write(frame)
+                cv2.polylines(frame, [polygon], isClosed=True, color=color, thickness=2)
+            
+                text_pos = (polygon[0][0], polygon[0][1] - 10)
+                cv2.putText(frame, f'{desk_name}: {status}', text_pos, cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+                
+    # out.write(frame)
     cv2.imshow('Desk Occupancy Detection', frame)
     
     frame_index += 1
@@ -108,5 +99,5 @@ while cap.isOpened():
         break
 
 cap.release()
-out.release()
+# out.release()
 cv2.destroyAllWindows()
