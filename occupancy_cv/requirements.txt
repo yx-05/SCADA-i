@@ -1,0 +1,4 @@
+ultralytics
+firebase-admin
+pandas
+numpy

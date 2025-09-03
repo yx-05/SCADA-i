@@ -1,11 +1,16 @@
 import cv2
 from ultralytics import YOLO
 import numpy as np
+import json
 
-model = YOLO("yolo11m.pt")
+model = YOLO("yolo11x.pt")
 print(model.names)
 
-video_path = "seatoccupancytest.mp4"
+# Save data into a json file
+with open("data.json", "w") as f:
+    json.dump({}, f)
+
+video_path = "occupancy_cv\seatoccupancytest.mp4"
 output_path = "output_with_polygons.mp4"
 
 DESK_ROIS = {
@@ -26,10 +31,6 @@ DESK_ROIS = {
     ], np.int32)
 }
 
-# Smoothing memory
-desk_last_seen = {seat: -999 for seat in DESK_ROIS}
-SMOOTH_FRAMES = 5
-
 cap = cv2.VideoCapture(video_path)
 frame_index = 0
 
@@ -41,6 +42,13 @@ frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 fps = int(cap.get(cv2.CAP_PROP_FPS))
 
+# Smoothing memory
+desk_last_seen = {seat: -999 for seat in DESK_ROIS}
+SMOOTH_FRAMES = fps * 10
+
+# Detection internal
+DETECTION_INTERVAL = fps * 1
+
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
 
@@ -51,37 +59,45 @@ while cap.isOpened():
     
     desk_status = {desk_name: 'Vacant' for desk_name in DESK_ROIS}
     
-    results = model(frame, conf=0.1)
+    results = []
+    if frame_index % DETECTION_INTERVAL == 0:
+        results = model(frame, conf=0.1)
     
-    for result in results:
-        boxes = result.boxes
-        # detected = False
-        for box in boxes:
-            if model.names[int(box.cls)] == 'person':
-                x1, y1, x2, y2 = map(int, box.xyxy[0])
-                person_center_point = ((x1 + x2) // 2, (y1 + y2) // 2)
-                
-                for desk_name, polygon in DESK_ROIS.items():
-                    is_inside = cv2.pointPolygonTest(polygon, person_center_point, False)
+    if results:
+        for result in results:
+            boxes = result.boxes
+            # detected = False
+            for box in boxes:
+                if model.names[int(box.cls)] == 'person':
+                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                    person_center_point = ((x1 + x2) // 2, (y1 + y2) // 2)
                     
-                    if is_inside >= 0:
-                        # detected = True
-                        desk_status[desk_name] = 'Occupied'
-                        desk_last_seen[desk_name] = frame_index 
-                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
-                        break
-                    else:
-                        if frame_index - desk_last_seen[desk_name] <= SMOOTH_FRAMES:
-                            desk_status[desk_name] = "Occupied"
-               
-        for desk_name, polygon in DESK_ROIS.items():
-            status = desk_status[desk_name]
-            color = (0, 255, 0) if status == 'Vacant' else (0, 0, 255)
-        
-            cv2.polylines(frame, [polygon], isClosed=True, color=color, thickness=2)
-        
-            text_pos = (polygon[0][0], polygon[0][1] - 10)
-            cv2.putText(frame, f'{desk_name}: {status}', text_pos, cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+                    for desk_name, polygon in DESK_ROIS.items():
+                        is_inside = cv2.pointPolygonTest(polygon, person_center_point, False)
+                        
+                        if is_inside >= 0:
+                            # detected = True
+                            desk_status[desk_name] = 'Occupied'
+                            desk_last_seen[desk_name] = frame_index 
+                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
+                            break
+    for desk_name in DESK_ROIS:
+        if frame_index - desk_last_seen[desk_name] <= SMOOTH_FRAMES:
+            desk_status[desk_name] = "Occupied"
+                
+    for desk_name, polygon in DESK_ROIS.items():
+        status = desk_status[desk_name]
+        color = (0, 255, 0) if status == 'Vacant' else (0, 0, 255)
+    
+        cv2.polylines(frame, [polygon], isClosed=True, color=color, thickness=2)
+    
+        text_pos = (polygon[0][0], polygon[0][1] - 10)
+        cv2.putText(frame, f'{desk_name}: {status}', text_pos, cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+    
+                # Save to a file
+    with open("data.json", "w") as f:
+        json.dump(desk_status, f, indent=4)
+
             
     out.write(frame)
     cv2.imshow('Desk Occupancy Detection', frame)
