@@ -101,9 +101,9 @@ while cap.isOpened():
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-with open("log.json", "w") as f:
-    json.dump(all_status, f, indent=4)
-print("Log file saved as log.json")
+    with open("occupancy_cv/log.json", "w") as f:
+        json.dump(all_status, f, indent=4)
+    print("Log file saved as log.json")
 
 cap.release()
 out.release()
