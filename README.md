@@ -12,6 +12,9 @@ Link to the Figma prototype:
 SCADA-i is an intelligent Building Management System (BMS) designed to optimize campus resource utilization. By leveraging the power of the Internet of Things (IoT) and Artificial Intelligence (AI), SCADA-i provides real-time monitoring and control of various building systems, including HVAC. The system also delivers live occupancy updates through application for more dynamic and efficient space management. Our goal is to create a more sustainable, efficient, and comfortable campus environment for students, faculty, and staff.
 ## ✨ Key Features
 
+## ⚙️ Architecture Block Diagram
+![Architecture Block Diagram](block_diagram.png)
+
 ## 💻 Technology Stack
 
 ## 📂 File Structure
