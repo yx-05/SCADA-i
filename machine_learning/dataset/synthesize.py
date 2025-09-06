@@ -10,14 +10,14 @@ DATA_END_DATE = "2024-12-31"
 TIME_FREQUENCY_MIN = 5
 
 # Room thermal properties
-HEAT_TRANSFER_COEFFICIENT = 0.05
-HEAT_FROM_OCCUPANT = 0.1
-AC_MAX_COOLING_POWER = 1.8  # A very powerful AC unit, as specified
+HEAT_TRANSFER_COEFFICIENT = 0.015
+HEAT_FROM_OCCUPANT = 0.02
+AC_MAX_COOLING_POWER = 0.7
 
 # Smart AC & Fan Control Parameters
-AC_TEMP_SETTING_MIN = 22.0
-AC_TEMP_SETTING_HIGH = 23.5
-AC_TEMP_SETTING_ECO = 24.5
+AC_TEMP_SETTING_MIN = 20.0
+AC_TEMP_SETTING_HIGH = 23.0
+AC_TEMP_SETTING_ECO = 21.0
 FAN_COOLING_EFFECT = {'off': 0.0, 'low': 0.08, 'medium': 0.15, 'high': 0.25}
 
 # --- NEW: Realistic Power Consumption Model (in Kilowatts) ---
@@ -38,8 +38,8 @@ WEEKDAY_OCCUPANCY_PROB = {
 WEEKEND_OCCUPANCY_PROB = 0.05
 
 # Thermostat simulation logic
-COMFORT_TEMP_MAX = 25.0
-COMFORT_TEMP_MIN = 23.0
+COMFORT_TEMP_MAX = 21.0
+COMFORT_TEMP_MIN = 19.0
 
 # --- DATA GENERATION FUNCTIONS (Unchanged) ---
 def generate_base_timeline(start_date, end_date, freq_min):
