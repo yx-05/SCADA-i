@@ -44,6 +44,7 @@ Run `yolo_cv_prototype_video.py` with python
 
 ## Sample Output
 `sample_output.mp4` output video for occupancy detection with annotation to visualize the detection
+
 ![Sample Output](output.png)
 
 ---
