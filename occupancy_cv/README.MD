@@ -28,12 +28,12 @@ Navigate to this module folder:
 ```bash
 cd desk_occupancy
 pip install -r requirements.txt
-python yolo_cv_prototype_video.py --help
 ```
 ---
 
 ## Configuration to run the code
-Change *video_path* and *desk_rois_path* to the destination for `test.mp4` and `desk_roi_pos.json` before running.
+Change *video_path* and *desk_rois_path* in `yolo_cv_prototype_video.py` to the destination for `test.mp4` and `desk_roi_pos.json` before running.
+Run `yolo_cv_prototype_video.py` with python
 
 ---
 
@@ -43,7 +43,8 @@ Change *video_path* and *desk_rois_path* to the destination for `test.mp4` and `
 ---
 
 ## Sample Output
-`sample_output.mp4` output video for occupancy detection with annotation to visualize the detection 
+`sample_output.mp4` output video for occupancy detection with annotation to visualize the detection
+![Sample Output](output.png)
 
 ---
 
