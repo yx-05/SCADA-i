@@ -1,0 +1,15 @@
+﻿Feature Name,Description,Data Type & Units
+timestamp,"The exact date and time of the data record, recorded at a 5-minute frequency. This is the primary index of the dataset.",Datetime
+hour_of_day,"The hour of the day, extracted from the timestamp. Useful for identifying daily patterns (e.g., office hours vs. night).",Integer (0-23)
+day_of_week,"The day of the week, extracted from the timestamp. Essential for identifying weekly patterns (weekdays vs. weekends).","Integer (0=Mon, 6=Sun)"
+day_of_year,The day of the year. Allows models to capture annual seasonality in weather patterns.,Integer (1-366)
+outside_temp,The simulated outdoor air temperature. It follows realistic daily and seasonal cycles for a tropical climate.,Float (°C)
+outside_humidity,"The simulated outdoor relative humidity, which is correlated with the outside temperature.",Float (%)
+weather_condition,The simulated categorical weather state. Note: It cannot be 'sunny' during night hours.,String/Categorical
+occupancy_count,The simulated number of people currently in the room. This is a primary source of internal heat gain.,Integer (count)
+is_occupied,"A binary flag (1 for occupied, 0 for empty). This is the main trigger for activating the HVAC system.",Integer (0 or 1)
+room_temp,"(Target Variable) The simulated indoor room temperature. This is the result of all other factors: outside heat, occupant heat, and AC cooling.",Float (°C)
+ac_temp_setting,"The temperature setting chosen by the smart controller for the AC unit. This represents the cooling intensity, not the target room temperature.",Integer (°C)
+fan_speed,The speed setting chosen by the smart controller for the fan. This affects both cooling and energy consumption.,String/Categorical
+power_kw,"(Energy Variable) The total electrical power being consumed by the HVAC system at that moment, in kilowatts. It is the sum of the compressor power (if on) and the fan power.",Float (Kilowatts)
+ac_control_reason,A text log describing the decision made by the smart controller for that time step. Extremely useful for understanding and debugging the system's behavior.,String
