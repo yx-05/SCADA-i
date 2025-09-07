@@ -114,6 +114,8 @@ After training and saving the models, you can run the simulation to test predict
 
    ```bash
    python run_simulation.py
+   ```
+   > **Note:** Make sure to cd into the project directory first. `cd path/to/your/project`
 
 ---
 
@@ -140,6 +142,7 @@ This shows the model’s predictions for each of the 5 rows in `testing_data.csv
 * **Humidity** → smaller effect
 
 ---
+
 
 
 
