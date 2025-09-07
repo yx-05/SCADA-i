@@ -16,8 +16,8 @@ AC_MAX_COOLING_POWER = 0.7
 
 # Smart AC & Fan Control Parameters
 AC_TEMP_SETTING_MIN = 20.0
-AC_TEMP_SETTING_HIGH = 23.0
-AC_TEMP_SETTING_ECO = 21.0
+AC_TEMP_SETTING_HIGH = 22.0
+AC_TEMP_SETTING_ECO = 23.0
 FAN_COOLING_EFFECT = {'off': 0.0, 'low': 0.08, 'medium': 0.15, 'high': 0.25}
 
 # --- NEW: Realistic Power Consumption Model (in Kilowatts) ---
@@ -38,8 +38,8 @@ WEEKDAY_OCCUPANCY_PROB = {
 WEEKEND_OCCUPANCY_PROB = 0.05
 
 # Thermostat simulation logic
-COMFORT_TEMP_MAX = 21.0
-COMFORT_TEMP_MIN = 19.0
+COMFORT_TEMP_MAX = 23.0
+COMFORT_TEMP_MIN = 21.0
 
 # --- DATA GENERATION FUNCTIONS (Unchanged) ---
 def generate_base_timeline(start_date, end_date, freq_min):
