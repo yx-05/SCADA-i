@@ -1,42 +1,95 @@
-# Occupancy Prediction Model
-[![Python Version](https://img.shields.io/badge/python-3.13-blue)](https://www.python.org/)
+# 🪑 Occupancy Prediction Model
 
-# Overview
-This model is train on a synthetic dataset with XGBoost classifier to predict the probability of occupancy after 30 minutes starting from a given time.
-The model score **0.8643** for F1-score tuning with optuna and get a overall F1-score of **0.88** for an unseen test dataset.
+This model is train on a synthetic dataset with XGBoost classifier to predict the probability of occupancy after 30 minutes starting from a given time. 
 
 ---
 
-# Files
-- `OccupancyPred.py` → A class that compiles the preprocessing and prediction code
-- `model.ipynb` → complete model training pipeline
-- `occupancy_pred.ipynb` → exported model
-- `run_example.py` → simulation of predictions
-- `testset.csv` → test data for simulation of predictions
+## 💻 Model Training
+
+The model was trained and tested using **Optuna** with **XGBoost**.
+
+### 🔹**Occupancy Prediction Model (Classification)**
+
+* **Algorithm:** `XGBoost`
+* **Task:** Predict the occupancy probability for the next 1 hour.
+* **Method:**
+
+  * Pipeline (`preprocess → classifier`)
+  * Hyperparameter tuning with `GridSearchCV`
+  * Scoring metric: **F1-score**
 
 ---
-# Installation 
-Navigate to this module folder:
+
+## 🧠 Results
+
+| Metric   | Score      |
+| -------- | ---------- |
+| F1 Score tuning with optuna | **0.86**  |
+| F1 Score on unseen test set | **0.87**   |
+
+---
+
+## 📂 Project Files
+
+```
+temperature-control-model/
+│── OccupancyPred.py  # A class that compiles the preprocessing and prediction code
+│── model.ipynb # Complete model training Jupyter notebook
+│── temperature_control.ipynb # Python notebook
+│── occupancy_pred.ipynb # Exported model
+|── run_example.py # Simulation of predictions
+│── testset.csv # Test data for simulation of predictions
+```
+
+---
+
+## 🚀 How to Use
+
+### 1. Clone the repo
+
 ```bash
-cd occupancy_pred_model
+git clone https://github.com/yx-05/SCADA-i.git
+cd SCADA-i/machine_learning/models/occupancy_pred_model
+```
+
+### 2. Install requirements
+
+```bash
 pip install -r requirements.txt
 ```
-Libraries for training and running will be downloaded.
 
----
-# Running
-To simulate the retreiving of data from database and run the preditions, `run_example.py` is created. 
-To run the file make sure the python environment is installed with the required libraries. Also make sure that `occupancy_pred.joblib` and `testset.csv` files are configured to the correct path. 
+### 3. Run the notebook
 
----
-# Input
-`testset.csv` → 20 rows of generated input dataset for prediction
-
----
-# Output
 ```bash
-The probability of next 30 mins for occupancy is: 0.6004461
+jupyter notebook notebooks/model.ipynb
+```
+
+### 3. Run the simulation
+
+To simulate retrieving data from the database and running predictions, run `run_example.py`. Ensure that your Python environment has all required libraries installed, and that `occupancy_pred.joblib` and `testset.csv` are correctly configured with the proper paths.
+```bash
+python run_example.py
+```
+
+---
+
+## 📃 Example output
+```bash
+The probability of next 1 hours for occupancy is: 0.7208425
 ```
 The prediction is based on the last 4 rows of the time series data. 
 
+---
 
+## 🔍 Explainability with SHAP
+
+**SHAP (SHapley Additive exPlanations)** is applied to see which features matter most to the model.
+
+📊 Example SHAP output:
+
+* **Current occupied state** and **cosine of the current hour** → most important
+* **Lag features for indoor temperature** → smaller effect
+
+The next hour occupancy is going to be quite similar to the recent occupancy. While for the time features, converting it to cos making time around noon to be -1 and this explain why lower value in it possibly predict higher probability in occupancy, as people use the room usually during this time. 
+
+---
