@@ -15,4 +15,4 @@ df = df.iloc[-4:]
 
 result = model.predict(df)
 
-print("The probability of next 30 mins for occupancy is:", result)
+print("The probability of next 1 hours for occupancy is:", result)

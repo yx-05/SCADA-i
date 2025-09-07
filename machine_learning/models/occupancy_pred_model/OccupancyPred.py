@@ -50,7 +50,7 @@ class OccupancyPred:
         df["weather_encoded"] = self.le_weather.transform(df["weather_condition"])
 
         # Select last row (current prediction input)
-        df = df.drop(["timestamp", "weather_condition", "is_occupied", "occupancy_count", "ac_control_reason", "power_kw", "fan_speed", "ac_temp_setting"], axis=1)
+        df = df.drop(["timestamp", "weather_condition", "occupancy_count", "ac_control_reason", "power_kw", "fan_speed", "ac_temp_setting"], axis=1)
 
         return df.iloc[[-1]]
 
