@@ -61,7 +61,7 @@ pip install -r requirements.txt
 ### 3. Run the notebook
 
 ```bash
-jupyter notebook notebooks/model.ipynb
+jupyter notebook model.ipynb
 ```
 
 ### 3. Run the simulation
