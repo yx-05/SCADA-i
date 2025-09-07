@@ -94,7 +94,7 @@ pip install -r requirements.txt
 ### 3. Run the notebook
 
 ```bash
-jupyter notebook notebooks/temperature_control.ipynb
+jupyter notebook temperature_control.ipynb
 ```
 
 ---
@@ -109,6 +109,7 @@ jupyter notebook notebooks/temperature_control.ipynb
 * **Humidity** → smaller effect
 
 ---
+
 
 
 
