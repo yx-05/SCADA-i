@@ -1,6 +1,6 @@
-# 🌡️ AI Temperature Control System
+# 🌡️ Temperature Control Model
 
-This project builds an **AI system to optimize room temperature**.
+This project builds an **AI model to optimize room temperature**.
 It predicts **AC temperature settings, fan speed, and power usage** using past data like weather, occupancy, and room conditions.
 
 The goal: **Save energy ⚡ while keeping rooms comfortable 😌**.
@@ -97,6 +97,37 @@ pip install -r requirements.txt
 jupyter notebook temperature_control.ipynb
 ```
 
+### 4. Run the Simulation
+
+After training and saving the models, you can run the simulation to test predictions on new data.
+
+1. Make sure you have the trained models in your project directory:
+   - `best_fan_model.joblib`
+   - `best_temp_model.joblib`
+   - `best_power_model.joblib`
+
+2. Place your new testing data file in the same directory (for example, `testing_data.csv`).
+
+   > **Note:** In this repository, we provide a sample `testing_data.csv` with 5 rows (generated using Google Gemini) that you can use to test the models.
+
+3. Run the prediction script:
+
+   ```bash
+   python run_simulation.py
+
+---
+
+### 🖥️ Sample Output
+
+When you run the script, you should see something like this:
+
+```text
+New Fan Speed Predictions {0:high, 1:low, 2:medium, 3:off, 4:on}: [1 2 1 1 2]
+New AC Temperature Predictions: [23. 22. 23. 23. 22.]
+New Power Consumption Predictions: [1.54924153 1.57909569 1.07031787 1.55151238 1.58543521]
+```
+This shows the model’s predictions for each of the 5 rows in `testing_data.csv`.
+
 ---
 
 ## 🔍 Explainability with SHAP
@@ -109,6 +140,7 @@ jupyter notebook temperature_control.ipynb
 * **Humidity** → smaller effect
 
 ---
+
 
 
 
