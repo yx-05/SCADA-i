@@ -3,25 +3,25 @@ import numpy as np
 import joblib
 
 # ---------- Load model ----------
-MODEL_PATH = "D:/Github/Pizza and Pasta Shop/SCADA-i/machine_learning/models/time_to_cool_model/time_to_cool_model.pkl"
+MODEL_PATH = "machine_learning/models/time_to_cool_model/time_to_cool_model.pkl"
 model = joblib.load(MODEL_PATH)
 
 # ---------- Example input ----------
 example_row = {
-    'timestamp': '2024-01-01 08:30',
-    'hour_of_day': 8,
+    'timestamp': '2024-02-01 16:20',
+    'hour_of_day': 16,
     'day_of_week': 1,
-    'day_of_year': 1,
-    'outside_temp': 32,
-    'outside_humidity': 50,
-    'weather_condition': 'clear',
-    'occupancy_count': 3,
+    'day_of_year': 32,
+    'outside_temp': 31.52249257560446,
+    'outside_humidity': 90.36530123875349,
+    'weather_condition': 'sunny',
+    'occupancy_count': 19,
     'is_occupied': 1,
-    'room_temp': 28.5,
-    'power_kw': 1.2,
+    'room_temp': 24.557731471867804,
+    'power_kw': 1.6,
     'fan_speed': 'medium',
-    'ac_temp_setting': 23,
-    'ac_control_reason': 'cooling'
+    'ac_temp_setting': 22,
+    'ac_control_reason': 'ACTION: Normal cooling (warm)'
 }
 
 df = pd.DataFrame([example_row])
