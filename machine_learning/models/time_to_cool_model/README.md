@@ -1,4 +1,4 @@
-# 🌡️ Time-to-Cool Model
+# 🕛 Time-to-Cool Model
 This project builds an **AI system to optimize room pre-cooling**.
 It predicts **how long it will take for a room to reach a target temperature** (e.g., 23°C) using historical HVAC and environmental data.
 
@@ -46,7 +46,7 @@ time-to-cool-model/
 
 ---
 
-## 🚀 How to Use
+## ❓ How to Use
 
 ### 1. Clone the repo
 
