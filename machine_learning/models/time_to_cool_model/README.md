@@ -66,6 +66,7 @@ pip install -r requirements.txt
 ```bash
 jupyter notebook time_to_cool.ipynb
 ```
+
 ### 4. Run the demo script
 To simulate retrieving data from the database and running predictions, run `demo_prediction.py`. Ensure that your Python environment has all required libraries installed, and that `time_to_cool_model.pkl` and `dataset.csv` are correctly configured with the proper paths.
 ```bash

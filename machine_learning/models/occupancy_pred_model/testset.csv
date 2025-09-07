@@ -1,0 +1,21 @@
+timestamp,hour_of_day,day_of_week,day_of_year,outside_temp,outside_humidity,weather_condition,occupancy_count,is_occupied,room_temp,power_kw,fan_speed,ac_temp_setting,ac_control_reason
+2024-01-01 08:20:00,8,0,1,28.228721,73.296615,sunny,0,0,25.064459,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 08:25:00,8,0,1,27.851544,71.246631,cloudy,0,0,25.347837,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 08:30:00,8,0,1,28.292772,70.263216,cloudy,0,0,25.11186,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 08:35:00,8,0,1,28.226767,70.95683,cloudy,0,0,25.22199,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 08:40:00,8,0,1,27.968974,71.799931,cloudy,0,0,25.30408,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 08:45:00,8,0,1,27.874349,75.183568,sunny,0,0,25.181337,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 08:50:00,8,0,1,27.788734,72.637213,sunny,0,0,25.21832,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 08:55:00,8,0,1,28.175648,75.597167,sunny,0,0,25.259713,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 09:00:00,9,0,1,28.017968,76.105925,sunny,0,0,25.202842,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 09:05:00,9,0,1,28.346448,76.900011,cloudy,0,0,25.32998,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 09:10:00,9,0,1,28.04104,75.005954,cloudy,0,0,25.395926,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 09:15:00,9,0,1,27.555308,74.927082,sunny,0,0,25.03744,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 09:20:00,9,0,1,28.086182,71.13384,sunny,0,0,25.260338,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 09:25:00,9,0,1,28.20406,70.489827,sunny,0,0,25.204908,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 09:30:00,9,0,1,27.692572,73.572687,sunny,0,0,25.329672,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 09:35:00,9,0,1,27.745932,74.98558,sunny,0,0,25.347809,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 09:40:00,9,0,1,28.182686,73.900324,sunny,0,0,25.085735,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 09:45:00,9,0,1,27.645205,72.289942,cloudy,0,0,25.322901,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 09:50:00,9,0,1,27.865432,76.303781,cloudy,0,0,25.149866,0,off,,SYSTEM OFF: Room unoccupied
+2024-01-01 09:55:00,9,0,1,27.983641,76.521566,sunny,0,0,25.24919,0,off,,SYSTEM OFF: Room unoccupied
