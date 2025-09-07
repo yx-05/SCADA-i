@@ -60,7 +60,7 @@ Plug-and-play support for heterogeneous sensors and actuators — including ESP3
 | Hardware               | Functions                         |
 |---------------------|--------------------------------------------|
 | **ESP32 CAM**           | Run YOLO object detection CV model for accurate occupancy detection    |
-| **DHT11**        | Real-time humidity measurement      |
+| **DHT11**        | Real-time temperature and humidity measurement      |
 | **DS18B20**        | Real-time temperature measurement  |
 | **Ultrasonic sensor**          | Seat-hogging prevention      |
 | **Infrared ray blaster**          | Control air conditioner      |
