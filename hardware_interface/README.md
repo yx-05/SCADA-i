@@ -13,7 +13,7 @@ The following section will further detail the specific architectures of hardware
 
 Further simplification to the design will be done during deployment, but the diagram serves as a good reference point to start design changes. The following daigram will also show the backend database's architecture for subsequent reference during further interfacing during deployment.
 
-![Backend Database Architecture](backenddatabase_architecture.png)
+![Backend Database Architecture](backenddatabase_architecture.jpg)
 
 ## 📂 Project Files
 
