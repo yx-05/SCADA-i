@@ -71,6 +71,7 @@ temperature-control-model/
 |── best_fan_model.joblib # Saved fan model
 |── best_power_model.joblib # Saved power model
 │── requirements.txt # Necessary package dependencies
+|── run_simulation.py # Simulation script
 │── README.md
 ```
 
@@ -142,6 +143,7 @@ This shows the model’s predictions for each of the 5 rows in `testing_data.csv
 * **Humidity** → smaller effect
 
 ---
+
 
 
 
