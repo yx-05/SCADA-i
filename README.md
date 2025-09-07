@@ -40,8 +40,9 @@ Plug-and-play support for heterogeneous sensors and actuators — including ESP3
 ## ⚙️ Architecture Block Diagram
 
 ![SCADA-i Architecture Block Diagram](block_diagram.png)
-🛠️ Usage Example
-Once deployed, SCADA-i:
+
+### 🛠️ Usage Example
+#### Once deployed, SCADA-i:
 
 **1) Detects people via ESP32-CAM + YOLO**  
 **2) Monitors seat usage via ultrasonic sensors**  
