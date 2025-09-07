@@ -64,7 +64,7 @@ pip install -r requirements.txt
 jupyter notebook model.ipynb
 ```
 
-### 3. Run the simulation
+### 4. Run the simulation
 
 To simulate retrieving data from the database and running predictions, run `run_example.py`. Ensure that your Python environment has all required libraries installed, and that `occupancy_pred.joblib` and `testset.csv` are correctly configured with the proper paths.
 ```bash
