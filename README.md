@@ -56,7 +56,7 @@ Plug-and-play support for heterogeneous sensors and actuators — including ESP3
 
 ---
 
-## Hardware Used
+## ⚙️ Hardware Used
 | Hardware               | Functions                         |
 |---------------------|--------------------------------------------|
 | **ESP32 CAM**           | Run YOLO object detection CV model for accurate occupancy detection    |
