@@ -76,8 +76,8 @@ The model was trained and tested using **GridSearchCV + ML Pipelines** with **Ra
 ```
 temperature-control-model/
 │── dataset.csv  # Dataset
-│── testing_data.csv # Testing Dataset
-│── temperature_control.ipynb # Python Notebook
+│── testing_data.csv # Testing dataset
+│── temperature_control.ipynb # Python notebook
 │── best_temp_model.joblib # Saved temperature model
 |── best_fan_model.joblib # Saved fan model
 |── best_power_model.joblib # Saved power model
@@ -120,5 +120,6 @@ jupyter notebook notebooks/temperature_control.ipynb
 * **Humidity** → smaller effect
 
 ---
+
 
 
