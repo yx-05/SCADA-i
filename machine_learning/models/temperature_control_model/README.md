@@ -64,15 +64,15 @@ The model was trained and tested using **GridSearchCV + ML Pipelines** with **Ra
 
 ```
 temperature-control-model/
-│── dataset.csv  # Dataset
-│── testing_data.csv # Testing dataset
-│── temperature_control.ipynb # Python notebook
-│── best_temp_model.joblib # Saved temperature model
-|── best_fan_model.joblib # Saved fan model
-|── best_power_model.joblib # Saved power model
-│── requirements.txt # Necessary package dependencies
-|── run_simulation.py # Simulation script
-│── README.md
+│── dataset.csv               # Training dataset
+│── testing_data.csv          # Testing dataset (new data for simulation)
+│── temperature_control.ipynb # Jupyter Notebook (train + save models)
+│── best_temp_model.joblib    # Saved AC temperature model
+│── best_fan_model.joblib     # Saved fan model
+│── best_power_model.joblib   # Saved power model
+│── requirements.txt          # Python dependencies
+│── run_simulation.py         # Script to load models + predict
+│── README.md                 # Documentation
 ```
 
 ---
@@ -143,6 +143,7 @@ This shows the model’s predictions for each of the 5 rows in `testing_data.csv
 * **Humidity** → smaller effect
 
 ---
+
 
 
 
