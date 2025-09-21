@@ -8,4 +8,4 @@ class SystemState(Enum):
     IDLE = auto() # State: the room is not occupied and enter energy saving mode
     PRE_COOLING = auto() # State: pre cooling is undergoing
     PRE_COOLING_FINISH = auto()
-    ERROR = auto() # State: Error state to log (not occupied even the estimated time passed)
+    # ERROR = auto() # State: Error state to log (not occupied even the estimated time passed)
