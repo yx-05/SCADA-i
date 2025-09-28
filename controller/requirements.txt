@@ -1,0 +1,7 @@
+paho-mqtt
+pandas
+numpy
+requests
+lightgbm
+xgboost
+scikit-learn

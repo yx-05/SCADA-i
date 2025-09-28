@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
+import numpy as np
+
 from ModelLoader import ModelLoader
 from SystemState import SystemState
 
-class Controller:
+class ModelFlow:
     def __init__(self, models: ModelLoader):
         self.model = models
         self.state = SystemState.IDLE
@@ -23,9 +25,10 @@ class Controller:
         """
         print(f"\nTick at {datetime.now()} | Current State: {self.state.name}")
         
+        latest_row = current_sensor_data.iloc[-1]
         
         # Always change to OCCUPIED first if occupied
-        if current_sensor_data['occupied']:
+        if latest_row['is_occupied']:
             if self.state != SystemState.OCCUPIED:
                 # log the suprise occupancy
                 print("Surprise occupancy detected (False Negative). Logging the event.")
@@ -34,7 +37,7 @@ class Controller:
         # State Transition Logic
         if self.state == SystemState.OCCUPIED:
             # If room becomes empty, transition to saving mode
-            if not current_sensor_data['occupied']:
+            if not latest_row['is_occupied']:
                 self._set_to_IDLE(current_sensor_data)
 
         elif self.state == SystemState.IDLE:
@@ -55,13 +58,13 @@ class Controller:
                 self._set_to_PRE_COOLING()
 
         elif self.state == SystemState.PRE_COOLING:
-            if current_sensor_data['temperature'] <= 23:
+            if latest_row['room_temp'] <= 23:
                 print("Target pre-cool temperature reached. Waiting for occupant.")
                 self._set_to_PRE_COOLING_FINISH()
         
         elif self.state == SystemState.PRE_COOLING_FINISH:
             # The room is occupied
-            if current_sensor_data['occupied']:
+            if latest_row['is_occupied']:
                 self._set_to_OCCUPIED()
                 
             # Set 15 minutes grace period before we flag the error
@@ -131,6 +134,9 @@ class Controller:
         # Run occupancy model
         occ_model = self.model.get("occupancy")
         next_hr_occ_prob = occ_model.predict(sensor_data)
+        
+        if isinstance(next_hr_occ_prob, (list, np.ndarray)):
+            next_hr_occ_prob = float(next_hr_occ_prob[0])
         
         print(f"Predicted occupancy probability for next hour: {next_hr_occ_prob:.2f}")
         
