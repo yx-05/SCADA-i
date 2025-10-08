@@ -4,6 +4,9 @@ import numpy as np
 from ModelLoader import ModelLoader
 from SystemState import SystemState
 
+# Text to speech
+import pyttsx3
+
 class ModelFlow:
     def __init__(self, models: ModelLoader):
         self.model = models
@@ -15,6 +18,10 @@ class ModelFlow:
         self.predicted_arrival_deadline = None
         self.PREDICTION_INTERVAL = timedelta(minutes=50) # How often to re-predict in IDLE state.
         self.TARGET_TEMP = 23.0
+        
+        self.engine = pyttsx3.init()
+        self.engine.setProperty("rate", 150)
+        self.engine.setProperty("volume", 1.0)
         print(f"Controller Initilized. Starting state: {self.state.name}")
     
     def tick(self, current_sensor_data):
@@ -82,7 +89,9 @@ class ModelFlow:
             temp_model = self.model.get('temperature')
             actions = temp_model.predict(sensor_data) 
             print(f"State: OCCUPIED, Action: temperature control: {actions}")
-        
+            self.engine.say(f"Please adjust the air cond temperature to {actions}")
+            self.engine.runAndWait()
+            
         elif self.state == SystemState.IDLE:
             print(f"State: IDLE, Action: Turn off air conditioner. Next pre-cooling {self.pre_cool_start_time}")
             
