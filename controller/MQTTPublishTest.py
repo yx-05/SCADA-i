@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 
 # MQTT broker details
-BROKER = "192.168.0.9"
+BROKER = "192.168.0.8"
 PORT = 1883
 TOPIC = "room/room1/device/1/sensor"
 

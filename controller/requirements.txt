@@ -6,3 +6,4 @@ lightgbm
 xgboost
 scikit-learn
 joblib
+pyttsx3

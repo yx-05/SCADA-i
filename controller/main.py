@@ -69,6 +69,7 @@ class Controller:
                 if current_data and current_data != self.last_processed_data:
                     self.last_processed_data = current_data
                     logging.info(f"New sensor data is received: {current_data}")
+
                 else:
                     logging.info("No new sensor data is received. Will be using previous data.")
                     
