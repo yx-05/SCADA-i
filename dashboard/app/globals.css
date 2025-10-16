@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@keyframes morph-animation {
+  0% {
+    /* Starting positions for the three gradient blobs */
+    background-position: 0% 50%, 50% 100%, 100% 50%;
+  }
+  50% {
+    /* Mid-point positions, they travel to different spots */
+    background-position: 100% 50%, 50% 0%, 0% 50%;
+  }
+  100% {
+    /* Return to the starting positions for a seamless loop */
+    background-position: 0% 50%, 50% 100%, 100% 50%;
+  }
+}
+
+body {
+  min-height: 100vh;
+  
+  /* This is the key: We layer three radial gradients.
+    Each is a large, soft circle of one of your colors that fades to transparent.
+    They are layered on top of a solid base color.
+  */
+  background: 
+    
+    radial-gradient(circle at 20% 20%, #a38df4, transparent 40%),
+    
+    radial-gradient(circle at 75% 20%, #71afff, transparent 40%),
+    
+    radial-gradient(circle at 50% 80%, #5DC4CF, transparent 40%),
+
+    radial-gradient(circle at 50% 80%, #f78bee, transparent 40%),
+
+    radial-gradient(circle at 50% 80%, #a484ff, transparent 40%),
+
+    #b3e0e5;
+  /* Make the gradients very large and prevent them from repeating */
+  background-size: 200% 200%;
+  background-repeat: no-repeat;
+  
+  /* Apply the slow, smooth morphing animation */
+  animation: morph-animation 15s ease-in-out infinite;
+}
