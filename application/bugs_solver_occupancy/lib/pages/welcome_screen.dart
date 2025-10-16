@@ -1,10 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'sign_up_screen.dart';
-import 'login_screen.dart'; // 👈
+import 'login_screen.dart';
 
-/// Colors from your colors.xml:
-/// background_colour: #222831, border_enter: #c4c4c4
 const _bg = Color(0xFF222831);
 
 class WelcomeScreen extends StatefulWidget {
@@ -17,69 +16,72 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
   bool _showSignUp = false;
-  bool _showLogin = false; // 👈
+  bool _showLogin = false;
 
   @override
   Widget build(BuildContext context) {
     final signUpHeight = MediaQuery.of(context).size.height * .77;
-    final loginHeight  = MediaQuery.of(context).size.height * .65;
+    final loginHeight = MediaQuery.of(context).size.height * .65;
 
     return Scaffold(
       backgroundColor: _bg,
       body: Stack(
         children: [
-          // Main content
+          // ---------- Main content ----------
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 135),
-                  const Text(
+                  SizedBox(height: 135.h),
+                  Text(
                     'Welcome =)',
                     style: TextStyle(
-                      fontSize: 32,
+                      fontSize: 32.sp,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
+                  SizedBox(height: 16.h),
+                  Text(
                     "Stay connected with all university hardware systems and control them easily from one dashboard.",
                     style: TextStyle(
-                      fontSize: 15,
-                      color: Color(0xFFDDDDDD),
+                      fontSize: 15.sp,
+                      color: const Color(0xFFDDDDDD),
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 20),
-                  // Logo
+                  SizedBox(height: 20.h),
+
+                  // ---------- Logo ----------
                   SizedBox(
-                    height: 200,
+                    height: 200.h,
                     child: Center(
                       child: Image.asset(
                         'assets/removed_bg.png',
                         fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => const Icon(
+                        errorBuilder: (_, __, ___) => Icon(
                           Icons.image_outlined,
                           color: Colors.white24,
-                          size: 120,
+                          size: 120.sp,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  // Create Account
+                  SizedBox(height: 20.h),
+
+                  // ---------- Create Account ----------
                   BlurButton(
                     text: 'Create Account',
                     backgroundColor: Colors.white,
                     textColor: Colors.black,
                     onPressed: () => setState(() => _showSignUp = true),
                   ),
-                  const SizedBox(height: 20),
-                  // Log in
+                  SizedBox(height: 20.h),
+
+                  // ---------- Log In ----------
                   BlurOutlinedButton(
                     text: 'Log in',
                     backgroundColor: _bg,
@@ -87,13 +89,13 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     borderColor: Colors.white,
                     onPressed: () => setState(() => _showLogin = true),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                 ],
               ),
             ),
           ),
 
-          // Dim background when any sheet is open
+          // ---------- Dim background ----------
           if (_showSignUp || _showLogin)
             AnimatedOpacity(
               opacity: 1,
@@ -103,13 +105,11 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   _showSignUp = false;
                   _showLogin = false;
                 }),
-                child: Container(
-                  color: Colors.black.withOpacity(0.5),
-                ),
+                child: Container(color: Colors.black.withOpacity(0.5)),
               ),
             ),
 
-          // Slide-up SignUp bottom sheet
+          // ---------- Slide-up SignUp ----------
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             curve: Curves.fastOutSlowIn,
@@ -120,16 +120,15 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             child: Material(
               color: Colors.transparent,
               child: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.black54,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
                 ),
                 child: ClipRRect(
                   borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(30)),
+                  BorderRadius.vertical(top: Radius.circular(30.r)),
                   child: SignUpScreen(
                     onBack: () => setState(() => _showSignUp = false),
-                    // When "Log In" tapped in SignUp
                     onGoToLogin: () async {
                       setState(() => _showSignUp = false);
                       await Future.delayed(const Duration(milliseconds: 650));
@@ -142,7 +141,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             ),
           ),
 
-          // Slide-up Login bottom sheet
+          // ---------- Slide-up Login ----------
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             curve: Curves.fastOutSlowIn,
@@ -153,16 +152,15 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             child: Material(
               color: Colors.transparent,
               child: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.black54,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
                 ),
                 child: ClipRRect(
                   borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(30)),
+                  BorderRadius.vertical(top: Radius.circular(30.r)),
                   child: LoginScreen(
                     onBack: () => setState(() => _showLogin = false),
-                    // 👇 NEW: When "Sign Up" tapped in Login
                     onGoToSignUp: () async {
                       setState(() => _showLogin = false);
                       await Future.delayed(const Duration(milliseconds: 650));
@@ -180,7 +178,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   }
 }
 
-/// Button that gently blurs its text when pressed (to mimic your Compose effect)
+/// ---------------------------------------------------------
+/// BUTTONS
+/// ---------------------------------------------------------
 class BlurButton extends StatefulWidget {
   const BlurButton({
     super.key,
@@ -214,24 +214,24 @@ class _BlurButtonState extends State<BlurButton> {
       onPointerCancel: (_) => _setPressed(false),
       child: SizedBox(
         width: double.infinity,
-        height: 46,
+        height: 46.h,
         child: FilledButton(
           style: FilledButton.styleFrom(
             backgroundColor: widget.backgroundColor,
             foregroundColor: widget.textColor,
-            shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.r)),
             elevation: 20,
             shadowColor: Colors.black26,
           ),
           onPressed: widget.onPressed,
           child: ImageFiltered(
-            imageFilter:
-            ImageFilter.blur(sigmaX: _pressed ? 4 : 0, sigmaY: _pressed ? 4 : 0),
+            imageFilter: ImageFilter.blur(
+                sigmaX: _pressed ? 4 : 0, sigmaY: _pressed ? 4 : 0),
             child: Text(
               widget.text,
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 16.sp,
                 color: widget.textColor,
                 fontWeight: FontWeight.w600,
               ),
@@ -278,25 +278,25 @@ class _BlurOutlinedButtonState extends State<BlurOutlinedButton> {
       onPointerCancel: (_) => _setPressed(false),
       child: SizedBox(
         width: double.infinity,
-        height: 46,
+        height: 46.h,
         child: OutlinedButton(
           style: OutlinedButton.styleFrom(
-            side: BorderSide(color: widget.borderColor, width: 2),
+            side: BorderSide(color: widget.borderColor, width: 2.w),
             foregroundColor: widget.textColor,
             backgroundColor: widget.backgroundColor,
-            shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.r)),
             elevation: 20,
             shadowColor: Colors.black26,
           ),
           onPressed: widget.onPressed,
           child: ImageFiltered(
-            imageFilter:
-            ImageFilter.blur(sigmaX: _pressed ? 4 : 0, sigmaY: _pressed ? 4 : 0),
+            imageFilter: ImageFilter.blur(
+                sigmaX: _pressed ? 4 : 0, sigmaY: _pressed ? 4 : 0),
             child: Text(
               widget.text,
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 16.sp,
                 color: widget.textColor,
                 fontWeight: FontWeight.w600,
               ),

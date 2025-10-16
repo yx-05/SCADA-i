@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'main_screen.dart';
 
@@ -27,7 +28,6 @@ class _ProfilePageState extends State<ProfilePage> {
     _loadProfileData();
   }
 
-  // ✅ Load saved data safely
   Future<void> _loadProfileData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -45,7 +45,6 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  // ✅ Save data safely
   Future<void> _saveProfileData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -81,108 +80,107 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF222831),
         automaticallyImplyLeading: false,
-        title: const Text(
+        title: Text(
           "Profile",
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+          style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w500),
         ),
         foregroundColor: Colors.white,
         actions: [
           IconButton(
-            icon: Icon(isEditing ? Icons.save : Icons.edit, color: Colors.white),
+            icon: Icon(
+              isEditing ? Icons.save : Icons.edit,
+              color: Colors.white,
+              size: 22.sp,
+            ),
             onPressed: _toggleEdit,
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.w),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 40),
-              const CircleAvatar(
-                radius: 60,
-                backgroundColor: Color(0xFFEEEEEE),
-                child: Icon(Icons.person, size: 70, color: Colors.black54),
+              SizedBox(height: 40.h),
+              CircleAvatar(
+                radius: 60.r,
+                backgroundColor: const Color(0xFFEEEEEE),
+                child: Icon(Icons.person, size: 70.sp, color: Colors.black54),
               ),
-              const SizedBox(height: 20),
-              const Text(
+              SizedBox(height: 20.h),
+              Text(
                 "User Profile",
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 22.sp,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
                   isEditing ? Colors.green[700] : const Color(0xFF222831),
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+                      borderRadius: BorderRadius.circular(8.r)),
                 ),
                 icon: Icon(
                   isEditing ? Icons.save : Icons.edit,
                   color: Colors.white,
+                  size: 22.sp,
                 ),
                 label: Text(
                   isEditing ? "Save Changes" : "Edit Profile",
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 onPressed: _toggleEdit,
               ),
 
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
 
               _profileBox(),
 
-              const SizedBox(height: 40),
+              SizedBox(height: 40.h),
 
-              // ✅ Fixed Back Button (safe + crash free)
+              // ✅ Fixed Back Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF222831),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
                   onPressed: () async {
                     print("🟢 Back button pressed");
                     try {
-                      // Save first
                       await _saveProfileData();
                       print("✅ Data saved safely");
                     } catch (e) {
                       print("⚠️ SharedPreferences save error: $e");
                     }
-
-                    // ✅ Give plugin time to close channel safely
                     await Future.delayed(const Duration(milliseconds: 300));
-
                     if (!mounted) return;
-
-                    // ignore: use_build_context_synchronously
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (_) => const MainScreen(),
                       ),
                     );
                   },
-                  child: const Text(
+                  child: Text(
                     "Back to Main Menu",
                     style: TextStyle(
-                      fontSize: 17,
+                      fontSize: 17.sp,
                       fontWeight: FontWeight.w500,
                       color: Colors.white,
                     ),
@@ -201,9 +199,9 @@ class _ProfilePageState extends State<ProfilePage> {
       width: double.infinity,
       decoration: BoxDecoration(
         color: const Color(0xFF5c5b63),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 25.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -212,19 +210,19 @@ class _ProfilePageState extends State<ProfilePage> {
             controller: nameController,
             editable: isEditing,
           ),
-          const Divider(color: Colors.white54),
+          Divider(color: Colors.white54, thickness: 1.h),
           _ProfileItem(
             label: "Student ID",
             controller: idController,
             editable: isEditing,
           ),
-          const Divider(color: Colors.white54),
+          Divider(color: Colors.white54, thickness: 1.h),
           _ProfileItem(
             label: "Course",
             controller: courseController,
             editable: isEditing,
           ),
-          const Divider(color: Colors.white54),
+          Divider(color: Colors.white54, thickness: 1.h),
           _ProfileItem(
             label: "Campus",
             controller: campusController,
@@ -250,7 +248,7 @@ class _ProfileItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: EdgeInsets.symmetric(vertical: 6.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,9 +257,9 @@ class _ProfileItem extends StatelessWidget {
             flex: 3,
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -271,15 +269,15 @@ class _ProfileItem extends StatelessWidget {
             child: editable
                 ? TextField(
               controller: controller,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
-              decoration: const InputDecoration(
+              style: TextStyle(color: Colors.white, fontSize: 16.sp),
+              decoration: InputDecoration(
                 isDense: true,
-                contentPadding:
-                EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                enabledBorder: UnderlineInputBorder(
+                contentPadding: EdgeInsets.symmetric(
+                    horizontal: 8.w, vertical: 6.h),
+                enabledBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white54),
                 ),
-                focusedBorder: UnderlineInputBorder(
+                focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white),
                 ),
               ),
@@ -287,9 +285,9 @@ class _ProfileItem extends StatelessWidget {
                 : Text(
               controller.text,
               textAlign: TextAlign.right,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white70,
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w400,
               ),
             ),

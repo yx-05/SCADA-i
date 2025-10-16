@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'occupancy_page.dart';
@@ -20,8 +21,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-
-    // 🟢 Load saved user name
     _loadUserName();
 
     // 🛰️ Connect to MQTT broker when app starts
@@ -29,8 +28,6 @@ class _MainScreenState extends State<MainScreen> {
     mqtt.connect();
   }
 
-
-  // ✅ Load only user name safely with a short delay
   Future<void> _loadUserName() async {
     await Future.delayed(const Duration(milliseconds: 150));
     try {
@@ -56,26 +53,26 @@ class _MainScreenState extends State<MainScreen> {
             children: [
               // 🔸 Top bar
               Container(
-                margin: const EdgeInsets.only(top: 15),
+                margin: EdgeInsets.only(top: 15.h),
                 color: const Color(0xFF222831),
                 padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       "Main Menu",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 17,
+                        fontSize: 17.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     Row(
                       children: [
-                        const Icon(Icons.mail_outline,
-                            color: Colors.white, size: 25),
-                        const SizedBox(width: 10),
+                        Icon(Icons.mail_outline,
+                            color: Colors.white, size: 25.sp),
+                        SizedBox(width: 10.w),
 
                         // 👇 Profile clickable area
                         GestureDetector(
@@ -89,22 +86,22 @@ class _MainScreenState extends State<MainScreen> {
                             });
                           },
                           child: Row(
-                            children: const [
+                            children: [
                               Text(
                                 "Profile",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 17,
+                                  fontSize: 17.sp,
                                 ),
                               ),
-                              SizedBox(width: 20),
+                              SizedBox(width: 20.w),
                               CircleAvatar(
-                                radius: 20,
+                                radius: 20.r,
                                 backgroundColor: Colors.white,
                                 child: Icon(
                                   Icons.person_outline,
                                   color: Colors.black,
-                                  size: 30,
+                                  size: 30.sp,
                                 ),
                               ),
                             ],
@@ -116,28 +113,28 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
 
-              const SizedBox(height: 40),
+              SizedBox(height: 40.h),
 
               // 🔸 Profile Section
-              const Center(
+              Center(
                 child: CircleAvatar(
-                  radius: 40,
-                  child: Icon(Icons.person, size: 50),
+                  radius: 40.r,
+                  child: Icon(Icons.person, size: 50.sp),
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.h),
 
               // ✅ Only show dynamic welcome name
               Text(
                 "Welcome back, $userName!",
-                style: const TextStyle(
-                  fontSize: 18,
+                style: TextStyle(
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
               ),
 
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
 
               // 🔹 Menu icons
               Row(
@@ -161,7 +158,8 @@ class _MainScreenState extends State<MainScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ManualOverridePage()),
+                            builder: (context) =>
+                            const ManualOverridePage()),
                       );
                     },
                   ),
@@ -180,45 +178,45 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
 
-              const SizedBox(height: 70),
+              SizedBox(height: 70.h),
 
               // 🔸 Latest News Section
               Container(
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF222831),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF222831),
                   borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(30),
+                    topRight: Radius.circular(30.r),
                   ),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black26,
-                      offset: Offset(0, -2),
-                      blurRadius: 8,
+                      offset: Offset(0, -2.h),
+                      blurRadius: 8.r,
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       "Latest News",
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
-                    SizedBox(height: 20),
-                    _NewsCard(
+                    SizedBox(height: 20.h),
+                    const _NewsCard(
                       imagePath: "assets/library.jpg",
                       title: "Say No to Seat-Hogging Initiative",
                       link:
                       "https://www.monash.edu.my/library/about/news/2025/articles/say-no-to-seat-hogging",
                     ),
-                    SizedBox(height: 20),
-                    _NewsCard(
+                    SizedBox(height: 20.h),
+                    const _NewsCard(
                       imagePath: "assets/opening_hour.jpg",
                       title: "Heriot-Watt University's Library Update",
                       link: "https://www.instagram.com/hwumisnews",
@@ -252,11 +250,11 @@ class _MenuIcon extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          Icon(icon, size: 50, color: Colors.black),
-          const SizedBox(height: 6),
+          Icon(icon, size: 50.sp, color: Colors.black),
+          SizedBox(height: 6.h),
           Text(
             label,
-            style: const TextStyle(fontSize: 15),
+            style: TextStyle(fontSize: 15.sp),
             textAlign: TextAlign.center,
           ),
         ],
@@ -283,20 +281,20 @@ class _NewsCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           child: Image.asset(
             imagePath,
             width: double.infinity,
             fit: BoxFit.contain,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w600,
-            fontSize: 14,
+            fontSize: 14.sp,
           ),
         ),
         if (link != null)
@@ -305,11 +303,11 @@ class _NewsCard extends StatelessWidget {
               final uri = Uri.parse(link!);
               await launchUrl(uri, mode: LaunchMode.externalApplication);
             },
-            child: const Text(
+            child: Text(
               "See More >",
               style: TextStyle(
                 color: Colors.white70,
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
                 decoration: TextDecoration.underline,
               ),

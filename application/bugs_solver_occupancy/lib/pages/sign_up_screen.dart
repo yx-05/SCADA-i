@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 const _hint = Color(0xFFC4C4C4);
 const _bg = Color(0xFF222831);
-const fieldGap = SizedBox(height: 15);
+final fieldGap = SizedBox(height: 15.h);
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key, required this.onBack, required this.onGoToLogin,});
+  const SignUpScreen({
+    super.key,
+    required this.onBack,
+    required this.onGoToLogin,
+  });
+
   final VoidCallback onBack;
   final VoidCallback onGoToLogin;
 
@@ -30,61 +36,58 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // white card-like content (to match your Compose)
     return Scaffold(
-      resizeToAvoidBottomInset: true, // 👈 allow content to move/scroll above keyboard
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+          padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 16.h),
           child: Form(
             key: _formKey,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 32), // 👈 ensures you can reach the bottom
+              padding: EdgeInsets.only(bottom: 32.h),
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 8),
-                  const Text(
+                  SizedBox(height: 8.h),
+                  Text(
                     "Create Your Account Now !",
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 22.sp,
                       fontWeight: FontWeight.w800,
                       color: Colors.black,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 10),
-                  const Text(
+                  SizedBox(height: 10.h),
+                  Text(
                     "The journey begins! Create your account to access and manage the university's hardware. Monitor devices, control systems, and track usage all from one dashboard.",
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       color: Colors.black,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
 
                   // Full name
                   TextFormField(
                     controller: _fullName,
-                    style: const TextStyle(fontSize: 15),
-                    decoration: const InputDecoration(
+                    style: TextStyle(fontSize: 15.sp),
+                    decoration: InputDecoration(
                       labelText: 'Enter Full Name',
-                      labelStyle: TextStyle(color: _hint, fontSize: 14),
-
-                      // keep height stable
-                      constraints: BoxConstraints(minHeight: 50),
-                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-
+                      labelStyle: TextStyle(color: _hint, fontSize: 14.sp),
+                      constraints: BoxConstraints(minHeight: 50.h),
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.h, horizontal: 12.w),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        gapPadding: 4,
+                        borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                        gapPadding: 4.w,
                       ),
-
-                      errorStyle: TextStyle(fontSize: 12, height: 0.8, color: Colors.red),
+                      errorStyle: TextStyle(
+                          fontSize: 12.sp, height: 0.8, color: Colors.red),
                     ),
                     validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
                   ),
@@ -93,19 +96,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   // Email
                   TextFormField(
                     controller: _email,
-                    style: const TextStyle(fontSize: 15),
-                    decoration: const InputDecoration(
+                    style: TextStyle(fontSize: 15.sp),
+                    decoration: InputDecoration(
                       labelText: 'Enter Email',
-                      labelStyle: TextStyle(color: _hint, fontSize: 14),
-
-                      constraints: BoxConstraints(minHeight: 50),
-                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-
+                      labelStyle: TextStyle(color: _hint, fontSize: 14.sp),
+                      constraints: BoxConstraints(minHeight: 50.h),
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.h, horizontal: 12.w),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        gapPadding: 4,
+                        borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                        gapPadding: 4.w,
                       ),
-                      errorStyle: TextStyle(fontSize: 12, height: 0.8, color: Colors.red),
+                      errorStyle: TextStyle(
+                          fontSize: 12.sp, height: 0.8, color: Colors.red),
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (v) {
@@ -119,25 +122,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   // Password
                   TextFormField(
                     controller: _password,
-                    style: const TextStyle(fontSize: 15),
-                    decoration: const InputDecoration(
+                    style: TextStyle(fontSize: 15.sp),
+                    decoration: InputDecoration(
                       labelText: 'Enter Password',
-                      labelStyle: TextStyle(color: _hint, fontSize: 14),
-
-                      constraints: BoxConstraints(minHeight: 50),
-                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-
+                      labelStyle: TextStyle(color: _hint, fontSize: 14.sp),
+                      constraints: BoxConstraints(minHeight: 50.h),
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 10.h, horizontal: 12.w),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        gapPadding: 4,
+                        borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                        gapPadding: 4.w,
                       ),
-                      errorStyle: TextStyle(fontSize: 12, height: 0.8, color: Colors.red),
+                      errorStyle: TextStyle(
+                          fontSize: 12.sp, height: 0.8, color: Colors.red),
                     ),
                     obscureText: true,
                     validator: (v) =>
                     (v != null && v.length >= 6) ? null : 'Min 6 characters',
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 5.h),
 
                   Row(
                     children: [
@@ -146,80 +149,84 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onChanged: (v) => setState(() => _rememberMe = v ?? false),
                         activeColor: Colors.black,
                       ),
-                      const Text('Remember me', style: TextStyle(color: Colors.black)),
+                      Text('Remember me',
+                          style: TextStyle(color: Colors.black, fontSize: 14.sp)),
                     ],
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2.h),
 
                   // Get Started
                   SizedBox(
-                    height: 48,
+                    height: 48.h,
                     child: FilledButton(
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFF222831),
                         foregroundColor: Colors.white,
-                        side: const BorderSide(color: _bg, width: 1),
+                        side: BorderSide(color: _bg, width: 1.w),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(30.r),
                         ),
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          // TODO: hook up your signup logic
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Account created!')),
                           );
                           widget.onBack();
                         } else {
-                          setState(() {}); // refresh to show errors immediately
+                          setState(() {});
                         }
                       },
-                      child: const Text(
+                      child: Text(
                         'Get Started',
-                        style: TextStyle(fontSize: 16, fontFamily: 'Inter'),
+                        style: TextStyle(fontSize: 16.sp, fontFamily: 'Inter'),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
 
                   // Back
                   SizedBox(
-                    height: 48,
+                    height: 48.h,
                     child: FilledButton(
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFF222831),
                         foregroundColor: Colors.white,
-                        side: const BorderSide(color: Colors.black, width: 1),
+                        side: BorderSide(color: Colors.black, width: 1.w),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(30.r),
                         ),
                       ),
                       onPressed: widget.onBack,
-                      child: const Text(
+                      child: Text(
                         'Back',
-                        style: TextStyle(fontSize: 16, fontFamily: 'Inter'),
+                        style: TextStyle(fontSize: 16.sp, fontFamily: 'Inter'),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
 
-                  // -------- Divider with "Sign up with" --------
+                  // Divider
                   Row(
-                    children: const [
-                      Expanded(child: Divider(thickness: 1, color: Colors.grey)),
+                    children: [
+                      Expanded(
+                          child:
+                          Divider(thickness: 1.h, color: Colors.grey)),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w),
                         child: Text(
                           "Sign up with",
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                          style: TextStyle(color: Colors.grey, fontSize: 14.sp),
                         ),
                       ),
-                      Expanded(child: Divider(thickness: 1, color: Colors.grey)),
+                      Expanded(
+                          child:
+                          Divider(thickness: 1.h, color: Colors.grey)),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
 
-                  // -------- Social row (Facebook + Google) --------
+                  // Social buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -227,40 +234,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onPressed: () {},
                         icon: Image.asset(
                           'assets/facebook_icon.png',
-                          height: 45,
+                          height: 45.h,
                           errorBuilder: (_, __, ___) =>
-                          const Icon(Icons.facebook_outlined),
+                              Icon(Icons.facebook_outlined, size: 30.sp),
                         ),
                       ),
-                      const SizedBox(width: 24),
+                      SizedBox(width: 24.w),
                       IconButton(
                         onPressed: () {},
                         icon: Image.asset(
                           'assets/google_icon.png',
-                          height: 44,
+                          height: 44.h,
                           errorBuilder: (_, __, ___) =>
-                          const Icon(Icons.g_mobiledata),
+                              Icon(Icons.g_mobiledata, size: 30.sp),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
 
-                  // -------- Already have an account? Log In --------
+                  // Already have an account
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
+                      Text(
                         "Already have an account? ",
-                        style: TextStyle(color: Colors.black, fontSize: 14),
+                        style:
+                        TextStyle(color: Colors.black, fontSize: 14.sp),
                       ),
                       GestureDetector(
-                        onTap: widget.onGoToLogin, // 👈 CHANGE: call parent
-                        child: const Text(
+                        onTap: widget.onGoToLogin,
+                        child: Text(
                           "Log In",
                           style: TextStyle(
                             color: Colors.blue,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.bold,
                             decoration: TextDecoration.underline,
                           ),

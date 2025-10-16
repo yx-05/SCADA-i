@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'main_screen.dart';
 
 const _hint = Color(0xFFC4C4C4);
 const _bg = Color(0xFF222831);
-const fieldGap = SizedBox(height: 15);
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
@@ -33,13 +33,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login() {
     if (_formKey.currentState!.validate()) {
-      // 👉 Navigate to MainScreen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const MainScreen()),
       );
     } else {
-      setState(() {}); // re-render with errors
+      setState(() {});
     }
   }
 
@@ -51,50 +50,53 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+          padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 16.h),
           child: Form(
             key: _formKey,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 32),
+              padding: EdgeInsets.only(bottom: 32.h),
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 8),
-                  const Text(
+                  SizedBox(height: 8.h),
+                  Text(
                     "Welcome Back !",
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 24.sp,
                       fontWeight: FontWeight.w800,
                       color: Colors.black,
                       fontFamily: 'Inter',
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 10),
-                  const Text(
+                  SizedBox(height: 10.h),
+                  Text(
                     "The journey continues! Log in to control your university hardware.",
-                    style: TextStyle(fontSize: 14, color: Colors.black),
+                    style: TextStyle(fontSize: 14.sp, color: Colors.black),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
 
-                  // Email
+                  // Email Field
                   TextFormField(
                     controller: _email,
-                    style: const TextStyle(fontSize: 15),
-                    decoration: const InputDecoration(
+                    style: TextStyle(fontSize: 15.sp),
+                    decoration: InputDecoration(
                       labelText: 'Enter Email',
-                      labelStyle: TextStyle(color: _hint, fontSize: 14),
-                      constraints: BoxConstraints(minHeight: 50),
+                      labelStyle: TextStyle(color: _hint, fontSize: 14.sp),
+                      constraints: BoxConstraints(minHeight: 50.h),
                       contentPadding:
-                      EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                      EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        gapPadding: 4,
+                        borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                        gapPadding: 4.w,
                       ),
                       errorStyle: TextStyle(
-                          fontSize: 12, height: 0.8, color: Colors.red),
+                        fontSize: 12.sp,
+                        height: 0.8,
+                        color: Colors.red,
+                      ),
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (v) {
@@ -103,88 +105,98 @@ class _LoginScreenState extends State<LoginScreen> {
                       return re.hasMatch(v) ? null : 'Enter a valid email';
                     },
                   ),
-                  fieldGap,
+                  SizedBox(height: 15.h),
 
-                  // Password
+                  // Password Field
                   TextFormField(
                     controller: _password,
-                    style: const TextStyle(fontSize: 15),
-                    decoration: const InputDecoration(
+                    style: TextStyle(fontSize: 15.sp),
+                    decoration: InputDecoration(
                       labelText: 'Enter Password',
-                      labelStyle: TextStyle(color: _hint, fontSize: 14),
-                      constraints: BoxConstraints(minHeight: 50),
+                      labelStyle: TextStyle(color: _hint, fontSize: 14.sp),
+                      constraints: BoxConstraints(minHeight: 50.h),
                       contentPadding:
-                      EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                      EdgeInsets.symmetric(vertical: 10.h, horizontal: 12.w),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        gapPadding: 4,
+                        borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                        gapPadding: 4.w,
                       ),
                       errorStyle: TextStyle(
-                          fontSize: 12, height: 0.8, color: Colors.red),
+                        fontSize: 12.sp,
+                        height: 0.8,
+                        color: Colors.red,
+                      ),
                     ),
                     obscureText: true,
                     validator: (v) =>
                     (v != null && v.length >= 6) ? null : 'Min 6 characters',
                   ),
-                  const SizedBox(height: 18),
+                  SizedBox(height: 18.h),
 
-                  // Log In
+                  // Log In Button
                   SizedBox(
-                    height: 48,
+                    height: 48.h,
                     child: FilledButton(
                       style: FilledButton.styleFrom(
                         backgroundColor: _bg,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(30.r),
                         ),
                       ),
                       onPressed: _login,
-                      child: const Text(
+                      child: Text(
                         'Log In',
-                        style: TextStyle(fontSize: 16, fontFamily: 'Inter'),
+                        style:
+                        TextStyle(fontSize: 16.sp, fontFamily: 'Inter'),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
 
-                  // Back
+                  // Back Button
                   SizedBox(
-                    height: 48,
+                    height: 48.h,
                     child: FilledButton(
                       style: FilledButton.styleFrom(
                         backgroundColor: _bg,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(30.r),
                         ),
                       ),
                       onPressed: widget.onBack,
-                      child: const Text(
+                      child: Text(
                         'Back',
-                        style: TextStyle(fontSize: 16, fontFamily: 'Inter'),
+                        style:
+                        TextStyle(fontSize: 16.sp, fontFamily: 'Inter'),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
 
                   // Divider
                   Row(
-                    children: const [
-                      Expanded(child: Divider(thickness: 1, color: Colors.grey)),
+                    children: [
+                      Expanded(
+                          child:
+                          Divider(thickness: 1.h, color: Colors.grey)),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        padding: EdgeInsets.symmetric(horizontal: 8.w),
                         child: Text(
                           "Sign in with",
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                          style:
+                          TextStyle(color: Colors.grey, fontSize: 14.sp),
                         ),
                       ),
-                      Expanded(child: Divider(thickness: 1, color: Colors.grey)),
+                      Expanded(
+                          child:
+                          Divider(thickness: 1.h, color: Colors.grey)),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
 
-                  // Social
+                  // Social Icons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -192,40 +204,41 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {},
                         icon: Image.asset(
                           'assets/facebook_icon.png',
-                          height: 45,
+                          height: 45.h,
                           errorBuilder: (_, __, ___) =>
                           const Icon(Icons.facebook_outlined),
                         ),
                       ),
-                      const SizedBox(width: 24),
+                      SizedBox(width: 24.w),
                       IconButton(
                         onPressed: () {},
                         icon: Image.asset(
                           'assets/google_icon.png',
-                          height: 44,
+                          height: 44.h,
                           errorBuilder: (_, __, ___) =>
                           const Icon(Icons.g_mobiledata),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
 
-                  // Go to Sign Up
+                  // Sign Up Link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
+                      Text(
                         "Don't have an account? ",
-                        style: TextStyle(color: Colors.black, fontSize: 15),
+                        style: TextStyle(
+                            color: Colors.black, fontSize: 15.sp),
                       ),
                       GestureDetector(
                         onTap: widget.onGoToSignUp,
-                        child: const Text(
+                        child: Text(
                           "Sign Up",
                           style: TextStyle(
                             color: Colors.blue,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.bold,
                             decoration: TextDecoration.underline,
                           ),

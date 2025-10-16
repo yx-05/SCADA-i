@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../services/mqtt_service.dart';
-import 'profile_page.dart'; // for Profile navigation
+import 'profile_page.dart';
 
 class OccupancyPage extends StatefulWidget {
   const OccupancyPage({super.key});
@@ -14,7 +15,6 @@ class _OccupancyPageState extends State<OccupancyPage> {
   final mqtt = MQTTService();
   Map<String, dynamic>? liveData;
 
-  // ✅ Default: all seats available
   final Map<String, List<SeatStatus>> seatData = {
     "Row A": List.filled(4, SeatStatus.available),
     "Row B": List.filled(3, SeatStatus.available),
@@ -28,13 +28,9 @@ class _OccupancyPageState extends State<OccupancyPage> {
   void initState() {
     super.initState();
     mqtt.connect();
-
-    // ✅ Listen for live MQTT data
     mqtt.dataStream.listen((data) {
       setState(() {
         liveData = data;
-
-        // If IoT sends detailed seat data per row
         if (data['rows'] != null) {
           final rows = data['rows'] as Map<String, dynamic>;
           for (final rowKey in rows.keys) {
@@ -43,10 +39,7 @@ class _OccupancyPageState extends State<OccupancyPage> {
                 .toList();
             seatData["Row $rowKey"] = rowList;
           }
-        }
-
-        // If only total occupancy number is sent (fallback demo)
-        else if (data['occupancy'] != null) {
+        } else if (data['occupancy'] != null) {
           final total = data['occupancy'] as int;
           final row = seatData["Row A"]!;
           for (int i = 0; i < row.length; i++) {
@@ -70,234 +63,255 @@ class _OccupancyPageState extends State<OccupancyPage> {
     final double? temp = liveData?['temperature']?.toDouble();
     final int? liveOccupancy = liveData?['occupancy']?.toInt();
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF222831),
-        automaticallyImplyLeading: false,
-        title: const Text(
-          "Occupancy",
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-        ),
-        foregroundColor: Colors.white,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()),
-                );
-              },
-              child: Row(
-                children: const [
-                  Icon(Icons.person_outline, color: Colors.white, size: 22),
-                  SizedBox(width: 5),
-                  Text("Profile",
-                      style: TextStyle(color: Colors.white, fontSize: 15)),
-                ],
+    return ScreenUtilInit(
+      designSize: const Size(390, 844),
+      minTextAdapt: true,
+      builder: (context, child) => Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF222831),
+          automaticallyImplyLeading: false,
+          title: Text(
+            "Occupancy",
+            style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w500),
+          ),
+          foregroundColor: Colors.white,
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: 16.w),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProfilePage()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.person_outline,
+                        color: Colors.white, size: 22.sp),
+                    SizedBox(width: 5.w),
+                    Text("Profile",
+                        style: TextStyle(
+                            color: Colors.white, fontSize: 15.sp)),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
 
-      // ---------- Body ----------
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // ---------- Dropdown ----------
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.black87, width: 2),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: selectedRow,
-                    icon: const Icon(Icons.keyboard_arrow_down,
-                        color: Colors.black54),
-                    dropdownColor: Colors.white,
-                    style: const TextStyle(
-                      color: Colors.black54,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w500,
+        // ---------- Body ----------
+        body: Padding(
+          padding: EdgeInsets.all(20.w),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Dropdown
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 14.w),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(color: Colors.black87, width: 2.w),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: selectedRow,
+                      icon: Icon(Icons.keyboard_arrow_down,
+                          color: Colors.black54, size: 24.sp),
+                      dropdownColor: Colors.white,
+                      style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 17.sp,
+                          fontWeight: FontWeight.w500),
+                      isExpanded: true,
+                      items: const [
+                        DropdownMenuItem(value: "Row A", child: Text("Row A")),
+                        DropdownMenuItem(value: "Row B", child: Text("Row B")),
+                        DropdownMenuItem(value: "Row C", child: Text("Row C")),
+                        DropdownMenuItem(value: "Row D", child: Text("Row D")),
+                        DropdownMenuItem(value: "Row E", child: Text("Row E")),
+                        DropdownMenuItem(value: "Row F", child: Text("Row F")),
+                      ],
+                      onChanged: (value) =>
+                          setState(() => selectedRow = value ?? "Row A"),
                     ),
-                    isExpanded: true,
-                    alignment: Alignment.center,
-                    items: const [
-                      DropdownMenuItem(value: "Row A", child: Text("Row A")),
-                      DropdownMenuItem(value: "Row B", child: Text("Row B")),
-                      DropdownMenuItem(value: "Row C", child: Text("Row C")),
-                      DropdownMenuItem(value: "Row D", child: Text("Row D")),
-                      DropdownMenuItem(value: "Row E", child: Text("Row E")),
-                      DropdownMenuItem(value: "Row F", child: Text("Row F")),
-                    ],
-                    onChanged: (value) =>
-                        setState(() => selectedRow = value ?? "Row A"),
                   ),
                 ),
-              ),
-              const SizedBox(height: 25),
+                SizedBox(height: 25.h),
 
-              // ---------- Info Card ----------
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF5c5b63),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Row(children: [
-                      Icon(Icons.location_on, color: Colors.white, size: 20),
-                      SizedBox(width: 8),
-                      Text("Location: 365 Silent PC Room",
+                // Info Card
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF5c5b63),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  padding: EdgeInsets.all(12.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.location_on, color: Colors.white, size: 20),
+                          const SizedBox(width: 8),
+                          Flexible( // 👈 prevents overflow
+                            child: Text(
+                              "Location: 365 Silent PC Room",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              softWrap: true,
+                              overflow: TextOverflow.fade, // fades gently if still long
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 5.h),
+                      Row(children: [
+                        Icon(Icons.thermostat,
+                            color: Colors.white, size: 20.sp),
+                        SizedBox(width: 8.w),
+                        Text(
+                          "Temperature: ${temp?.toStringAsFixed(1) ?? '--'}°C",
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500)),
-                    ]),
-                    const SizedBox(height: 5),
-                    Row(children: [
-                      const Icon(Icons.thermostat,
-                          color: Colors.white, size: 20),
-                      const SizedBox(width: 8),
-                      Text(
-                        "Temperature: ${temp?.toStringAsFixed(1) ?? '--'}°C",
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ]),
-                    const SizedBox(height: 5),
-                    Row(children: [
-                      const Icon(Icons.people, color: Colors.white, size: 20),
-                      const SizedBox(width: 8),
-                      Text(
-                        "Occupancy: ${liveOccupancy ?? occupiedSeats}/$totalSeats",
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ]),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 25),
-
-              // ---------- Layouts ----------
-              _buildRowLayout(selectedRow),
-
-              const SizedBox(height: 22),
-
-              // ---------- Row Status ----------
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF37353f),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding:
-                const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(selectedRow,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 17)),
-                    const SizedBox(height: 10),
-                    LinearProgressIndicator(
-                      value: (liveOccupancy != null && totalSeats > 0)
-                          ? (liveOccupancy! / totalSeats)
-                          : occupancy,
-                      backgroundColor: Colors.grey,
-                      color: occupancy == 1.0
-                          ? Colors.red
-                          : (occupancy >= 0.5
-                          ? Colors.yellow
-                          : const Color(0xFF3cfb34)),
-                      minHeight: 6,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "${(occupancy * 100).toStringAsFixed(0)}% occupied",
-                      style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500),
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // ---------- Back Button ----------
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF222831),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text(
-                    "Back to Main Menu",
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white),
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ]),
+                      SizedBox(height: 5.h),
+                      Row(children: [
+                        Icon(Icons.people, color: Colors.white, size: 20.sp),
+                        SizedBox(width: 8.w),
+                        Text(
+                          "Occupancy: ${liveOccupancy ?? occupiedSeats}/$totalSeats",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ]),
+                    ],
                   ),
                 ),
-              ),
-            ],
+                SizedBox(height: 25.h),
+
+                // Seat Layout
+                _fitCanvas(_buildRowLayout(selectedRow)),
+                SizedBox(height: 22.h),
+
+
+                // Status
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF37353f),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  padding:
+                  EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(selectedRow,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 17.sp)),
+                      SizedBox(height: 10.h),
+                      LinearProgressIndicator(
+                        value: occupancy,
+                        backgroundColor: Colors.grey,
+                        color: occupancy == 1.0
+                            ? Colors.red
+                            : (occupancy >= 0.5
+                            ? Colors.yellow
+                            : const Color(0xFF3cfb34)),
+                        minHeight: 6.h,
+                      ),
+                      SizedBox(height: 10.h),
+                      Text("${(occupancy * 100).toStringAsFixed(0)}% occupied",
+                          style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w500))
+                    ],
+                  ),
+                ),
+                SizedBox(height: 30.h),
+
+                // Back Button
+                SizedBox(
+                  width: 350.w,
+                  height: 65.h,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF222831),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      "Back to Main Menu",
+                      style: TextStyle(
+                        fontSize: 19.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  // ---------- Choose row layout ----------
+  // fixed-size canvas
+  Widget _fitCanvas(Widget child) => Center(
+    child: FittedBox(
+      fit: BoxFit.contain,
+      child: SizedBox(width: 390, height: 350, child: child),
+    ),
+  );
+
+  // select correct row
   Widget _buildRowLayout(String row) {
-    final seats = seatData[row]!;
+    final s = seatData[row]!;
     switch (row) {
       case "Row A":
-        return _buildRowA(seats);
+        return _buildRowA(s);
       case "Row B":
-        return _buildRowB(seats);
+        return _buildRowB(s);
       case "Row C":
-        return _buildRowC(seats);
+        return _buildRowC(s);
       case "Row D":
-        return _buildRowD(seats);
+        return _buildRowD(s);
       case "Row E":
-        return _buildRowE(seats);
+        return _buildRowE(s);
       case "Row F":
-        return _buildRowF(seats);
+        return _buildRowF(s);
       default:
         return const SizedBox.shrink();
     }
   }
 
-  // ---------- Example: Row A ----------
-  Widget _buildRowA(List<SeatStatus> seats) => Container(
-    width: double.infinity,
-    height: 350,
-    decoration: _layoutBox(),
+// Row layouts (unchanged positions)
+  Widget _buildRowA(List<SeatStatus> s) => Container(
+    decoration: BoxDecoration(
+      color: const Color(0xFF4a4950),
+      borderRadius: BorderRadius.circular(15.r),
+    ),
     child: Center(
       child: Transform.translate(
         offset: const Offset(60, 100),
@@ -306,13 +320,13 @@ class _OccupancyPageState extends State<OccupancyPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _SeatWithTable(label: "A01", status: seats[0]),
-              const SizedBox(width: 25),
-              _SeatWithTable(label: "A02", status: seats[1]),
-              const SizedBox(width: 25),
-              _SeatWithTable(label: "A03", status: seats[2]),
-              const SizedBox(width: 25),
-              _SeatWithTable(label: "A04", status: seats[3]),
+              _SeatWithTable(label: "A01", status: s[0]),
+              SizedBox(width: 25.w),
+              _SeatWithTable(label: "A02", status: s[1]),
+              SizedBox(width: 25.w),
+              _SeatWithTable(label: "A03", status: s[2]),
+              SizedBox(width: 25.w),
+              _SeatWithTable(label: "A04", status: s[3]),
             ],
           ),
         ),
@@ -320,152 +334,116 @@ class _OccupancyPageState extends State<OccupancyPage> {
     ),
   );
 
-  // ---------- Other Rows (B–F) ----------
+
   Widget _buildRowB(List<SeatStatus> s) => Container(
-    width: double.infinity,
-    height: 350,
-    decoration: _layoutBox(),
-    child: Stack(
-      alignment: Alignment.center,
-      clipBehavior: Clip.none,
-      children: [
-        Transform.rotate(
-          angle: -2.15,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _TableBox(),
-              const SizedBox(width: 6),
-              _TableBox(),
-            ],
-          ),
-        ),
-        Positioned(top: 73, left: 180, child: _SeatCircle(label: "B01", status: s[0])),
-        Positioned(top: 145, right: 83, child: _SeatCircle(label: "B02", status: s[1])),
-        Positioned(bottom: 20, left: 230, child: _SeatCircle(label: "B03", status: s[2])),
-      ],
+    decoration: BoxDecoration(
+      color: const Color(0xFF4a4950),
+      borderRadius: BorderRadius.circular(15.r),
     ),
+    child: Stack(alignment: Alignment.center, children: [
+      Transform.rotate(
+        angle: -2.15,
+        child: Row(mainAxisSize: MainAxisSize.min, children: const [
+          _TableBox(),
+          SizedBox(width: 6),
+          _TableBox(),
+        ]),
+      ),
+      Positioned(top: 73, left: 190, child: _SeatCircle(label: "B01", status: s[0])),
+      Positioned(top: 145, right: 90, child: _SeatCircle(label: "B02", status: s[1])),
+      Positioned(bottom: 20, left: 230, child: _SeatCircle(label: "B03", status: s[2])),
+    ]),
   );
 
   Widget _buildRowC(List<SeatStatus> s) => Container(
-    width: double.infinity,
-    height: 350,
-    decoration: _layoutBox(),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          _TableBox(),
-          const SizedBox(width: 20),
-          _TableBox(),
-        ]),
-        const SizedBox(height: 15),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          _SeatCircle(label: "C01", status: s[0]),
-          const SizedBox(width: 35),
-          _SeatCircle(label: "C02", status: s[1]),
-        ]),
-      ],
+    decoration: BoxDecoration(
+      color: const Color(0xFF4a4950),
+      borderRadius: BorderRadius.circular(15.r),
     ),
+    child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+        _TableBox(),
+        SizedBox(width: 20),
+        _TableBox(),
+      ]),
+      SizedBox(height: 15.h),
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        _SeatCircle(label: "C01", status: s[0]),
+        SizedBox(width: 35.w),
+        _SeatCircle(label: "C02", status: s[1]),
+      ]),
+    ]),
   );
 
   Widget _buildRowD(List<SeatStatus> s) => Container(
-    width: double.infinity,
-    height: 350,
-    decoration: _layoutBox(),
-    child: Stack(
-      alignment: Alignment.center,
-      clipBehavior: Clip.none,
-      children: [
-        Positioned(
+    decoration: BoxDecoration(
+      color: const Color(0xFF4a4950),
+      borderRadius: BorderRadius.circular(15.r),
+    ),
+    child: Stack(alignment: Alignment.center, children: [
+      Positioned(
           top: 150,
           left: 110,
           child: Transform.rotate(
-            angle: -0.6,
-            child: Container(
-              height: 35,
-              width: 160,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(6),
-              ),
-              alignment: Alignment.center,
-              child: const Text("TABLE",
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54)),
-            ),
-          ),
-        ),
-        Positioned(bottom: 50, left: 50, child: _SeatCircle(label: "D01", status: s[0])),
-        Positioned(bottom: 155, left: 75, child: _SeatCircle(label: "D02", status: s[1])),
-        Positioned(top: 65, left: 150, child: _SeatCircle(label: "D03", status: s[2])),
-        Positioned(bottom: 30, right: 170, child: _SeatCircle(label: "D04", status: s[3])),
-        Positioned(top: 180, right: 100, child: _SeatCircle(label: "D05", status: s[4])),
-      ],
-    ),
+              angle: -0.6,
+              child: Container(
+                  height: 35,
+                  width: 160,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(6)),
+                  alignment: Alignment.center,
+                  child: Text("TABLE",
+                      style: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54))))),
+      Positioned(bottom: 50, left: 50, child: _SeatCircle(label: "D01", status: s[0])),
+      Positioned(bottom: 155, left: 75, child: _SeatCircle(label: "D02", status: s[1])),
+      Positioned(top: 65, left: 150, child: _SeatCircle(label: "D03", status: s[2])),
+      Positioned(bottom: 30, right: 170, child: _SeatCircle(label: "D04", status: s[3])),
+      Positioned(top: 180, right: 100, child: _SeatCircle(label: "D05", status: s[4])),
+    ]),
   );
 
   Widget _buildRowE(List<SeatStatus> s) => Container(
-    width: double.infinity,
-    height: 350,
-    decoration: _layoutBox(),
-    child: Stack(
-      alignment: Alignment.center,
-      clipBehavior: Clip.none,
-      children: [
-        Positioned(
+    decoration: BoxDecoration(
+      color: const Color(0xFF4a4950),
+      borderRadius: BorderRadius.circular(15.r),
+    ),
+    child: Stack(alignment: Alignment.center, children: [
+      Positioned(
           top: 140,
           child: Transform.rotate(
-            angle: 0.7,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+              angle: 0.7,
+              child: Row(mainAxisSize: MainAxisSize.min, children: const [
                 _TableBox(),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 _TableBox(),
-              ],
-            ),
-          ),
-        ),
-        Positioned(bottom: 120, left: 80, child: _SeatCircle(label: "E01", status: s[0])),
-        Positioned(bottom: 60, right: 160, child: _SeatCircle(label: "E02", status: s[1])),
-      ],
-    ),
+              ]))),
+      Positioned(bottom: 120, left: 90, child: _SeatCircle(label: "E01", status: s[0])),
+      Positioned(bottom: 62, right: 170, child: _SeatCircle(label: "E02", status: s[1])),
+    ]),
   );
 
   Widget _buildRowF(List<SeatStatus> s) => Container(
-    width: double.infinity,
-    height: 350,
-    decoration: _layoutBox(),
-    child: Stack(
-      alignment: Alignment.center,
-      clipBehavior: Clip.none,
-      children: [
-        Positioned(
+    decoration: BoxDecoration(
+      color: const Color(0xFF4a4950),
+      borderRadius: BorderRadius.circular(15.r),
+    ),
+    child: Stack(alignment: Alignment.center, children: [
+      Positioned(
           top: 130,
           child: Transform.rotate(
-            angle: 2.5,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+              angle: 2.5,
+              child: Row(mainAxisSize: MainAxisSize.min, children: const [
                 _TableBox(),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 _TableBox(),
-              ],
-            ),
-          ),
-        ),
-        Positioned(left: 75, bottom: 170, child: _SeatCircle(label: "F01", status: s[0])),
-        Positioned(right: 170, top: 40, child: _SeatCircle(label: "F02", status: s[1])),
-      ],
-    ),
-  );
-
-  BoxDecoration _layoutBox() => BoxDecoration(
-    color: const Color(0xFF4a4950),
-    borderRadius: BorderRadius.circular(16),
+              ]))),
+      Positioned(left: 75, bottom: 170, child: _SeatCircle(label: "F01", status: s[0])),
+      Positioned(right: 180, top: 40, child: _SeatCircle(label: "F02", status: s[1])),
+    ]),
   );
 }
 
@@ -473,25 +451,54 @@ class _OccupancyPageState extends State<OccupancyPage> {
 enum SeatStatus { available, occupied }
 
 class _TableBox extends StatelessWidget {
+  const _TableBox({super.key});
+  @override
+  Widget build(BuildContext context) => Container(
+    height: 40,
+    width: 80,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(6)),
+    child: Text("TABLE",
+        style: TextStyle(
+            fontSize: 13.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.black54)),
+  );
+}
+
+class _SeatCircle extends StatelessWidget {
+  final String label;
+  final SeatStatus? status;
+  const _SeatCircle({super.key, required this.label, this.status});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      width: 80,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: const Text(
-        "TABLE",
-        style: TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.bold,
-          color: Colors.black54,
-        ),
-      ),
-    );
+    final seatColor = status == SeatStatus.occupied
+        ? const Color(0xFFc5c5c5)
+        : const Color(0xFF3cfb34);
+    return Column(children: [
+      Container(
+          height: 60,
+          width: 60,
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: seatColor,
+              border: Border.all(color: Colors.black54, width: 1.5)),
+          child: Center(
+              child: Text(label,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16.sp,
+                      color: Colors.black)))),
+      SizedBox(height: 6.h),
+      Text(label,
+          style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.white)),
+    ]);
   }
 }
 
@@ -502,88 +509,42 @@ class _SeatWithTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasPerson = status == SeatStatus.occupied;
-    final Color seatColor =
-    hasPerson ? const Color(0xFFc5c5c5) : const Color(0xFF3cfb34);
-
-    return Column(
-      children: [
-        Container(
-          height: 35,
-          width: 60,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: const Text("TABLE",
-              style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black54)),
-        ),
-        const SizedBox(height: 10),
-        Container(
+    final seatColor = status == SeatStatus.occupied
+        ? const Color(0xFFc5c5c5)
+        : const Color(0xFF3cfb34);
+    return Column(children: [
+      Container(
+        height: 35,
+        width: 60,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            color: Colors.grey[300], borderRadius: BorderRadius.circular(5)),
+        child: Text("TABLE",
+            style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.black54)),
+      ),
+      SizedBox(height: 10.h),
+      Container(
           height: 60,
           width: 60,
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: seatColor,
-            border: Border.all(color: Colors.black54, width: 1.5),
-          ),
-          child: hasPerson
-              ? const Icon(Icons.person, size: 30, color: Colors.black)
-              : Center(
+              shape: BoxShape.circle,
+              color: seatColor,
+              border: Border.all(color: Colors.black54, width: 1.5)),
+          child: Center(
               child: Text(label,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: Colors.black))),
-        ),
-        const SizedBox(height: 6),
-        Text(label,
-            style: const TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
-      ],
-    );
-  }
-}
-
-class _SeatCircle extends StatelessWidget {
-  final String label;
-  final SeatStatus status;
-  const _SeatCircle({required this.label, required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    final bool hasPerson = status == SeatStatus.occupied;
-    final Color seatColor =
-    hasPerson ? const Color(0xFFc5c5c5) : const Color(0xFF3cfb34);
-
-    return Column(
-      children: [
-        Container(
-          height: 60,
-          width: 60,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: seatColor,
-            border: Border.all(color: Colors.black54, width: 1.5),
-          ),
-          child: hasPerson
-              ? const Icon(Icons.person, size: 30, color: Colors.black)
-              : Center(
-              child: Text(label,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: Colors.black))),
-        ),
-        const SizedBox(height: 6),
-        Text(label,
-            style: const TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white)),
-      ],
-    );
+                      fontSize: 16.sp,
+                      color: Colors.black)))),
+      SizedBox(height: 6.h),
+      Text(label,
+          style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.white)),
+    ]);
   }
 }
