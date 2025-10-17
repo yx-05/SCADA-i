@@ -1,6 +1,7 @@
 // components/StatCards.tsx
 
 import React from 'react';
+import { useMqtt } from '@/context/MqttContext';
 
 const statData = [
   { title: 'Carbon Level', value: '420', unit: 'ppm', color: 'bg-green-100', textColor: 'text-green-800' },
@@ -30,6 +31,7 @@ const StatCard = ({ title, value, unit, color, textColor }: StatCardProps) => (
 );
 
 const StatCards = () => {
+  const { sensorData } = useMqtt();
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {statData.map((stat, index) => (

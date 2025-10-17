@@ -5,6 +5,7 @@ import { Bell, User, MoreVertical, Thermometer, Clock, AlertCircle, BarChart, Lo
 import { useState, useEffect, useRef } from 'react';
 import { useClickOutside } from '@/hooks/useClickOutside';
 import Link from 'next/link';
+import { useMqtt } from "@/context/MqttContext";
 
 const notifications = [
     { icon: AlertCircle, text: 'Carbon level is high in Row D.', time: '2 mins ago', color: 'text-red-500' },
@@ -19,6 +20,8 @@ const Header = () => {
 
   const notificationsRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
+
+  const { sensorData } = useMqtt();
 
   useClickOutside(notificationsRef, () => setIsNotificationsOpen(false));
   useClickOutside(settingsRef, () => setIsSettingsOpen(false));
@@ -36,7 +39,7 @@ const Header = () => {
     <header className="flex items-center justify-between p-4 bg-white border-b relative">
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-2 text-gray-600"><Clock size={20} /><span className="font-medium">{currentTime || '...'}</span></div>
-        <div className="flex items-center space-x-2 text-gray-600"><Thermometer size={20} /><span className="font-medium">28°C</span></div>
+        <div className="flex items-center space-x-2 text-gray-600"><Thermometer size={20} /><span className="font-medium">{sensorData?.temperature ?? "No data yet..."}</span></div>
       </div>
       <div className="text-center">
         <h1 className="text-xl font-bold">University Hardware Control Dashboard</h1>

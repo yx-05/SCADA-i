@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 
 # MQTT broker details
-BROKER = "192.168.0.8"
+BROKER = "127.0.0.1"
 PORT = 1883
 TOPIC = "room/room1/device/1/sensor"
 
@@ -30,25 +30,26 @@ def publish_data(phase, room_temp, outside_temp, occupancy, power_usage):
     print(f"[{phase}] Published: {payload}")
 
 try:
-    # ---- Idle Phase ----
-    for _ in range(5):
-        publish_data("IDLE", room_temp=29.0, outside_temp=33.0, occupancy=0, power_usage=0)
-        time.sleep(3)
+    while True:
+        # ---- Idle Phase ----
+        for _ in range(5):
+            publish_data("IDLE", room_temp=29.0, outside_temp=33.0, occupancy=0, power_usage=0)
+            time.sleep(3)
 
-    # ---- Pre-Cool Phase ----
-    for step in range(5):
-        publish_data("PRE-COOL", room_temp=28.5 - step*0.2, outside_temp=33.0, occupancy=0, power_usage=200)
-        time.sleep(3)
+        # ---- Pre-Cool Phase ----
+        for step in range(5):
+            publish_data("PRE-COOL", room_temp=28.5 - step*0.2, outside_temp=33.0, occupancy=0, power_usage=200)
+            time.sleep(3)
 
-    # ---- Occupied Phase ----
-    for step in range(5):
-        publish_data("OCCUPIED", room_temp=27.0 - step*0.3, outside_temp=33.0, occupancy=2, power_usage=600)
-        time.sleep(3)
+        # ---- Occupied Phase ----
+        for step in range(5):
+            publish_data("OCCUPIED", room_temp=27.0 - step*0.3, outside_temp=33.0, occupancy=2, power_usage=600)
+            time.sleep(3)
 
-    # ---- Back to Idle Phase ----
-    for _ in range(5):
-        publish_data("IDLE", room_temp=28.0, outside_temp=33.0, occupancy=0, power_usage=0)
-        time.sleep(3)
+        # ---- Back to Idle Phase ----
+        for _ in range(5):
+            publish_data("IDLE", room_temp=28.0, outside_temp=33.0, occupancy=0, power_usage=0)
+            time.sleep(3)
 
 except KeyboardInterrupt:
     print("Exiting...")
