@@ -33,7 +33,7 @@ class MQTTService {
       return;
     }
 
-    // ✅ Subscribe to both sensor and override response topics
+    // ✅ Subscriptions
     client.subscribe('room/+/device/+/sensor', MqttQos.atLeastOnce);
     client.subscribe('room/+/manual_override/response', MqttQos.atLeastOnce);
 
@@ -42,25 +42,36 @@ class MQTTService {
       final recMess = messages![0].payload as MqttPublishMessage;
       final topic = messages[0].topic;
       final payload =
-      MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
       try {
         final Map<String, dynamic> data = jsonDecode(payload);
-        data['topic'] = topic; // attach topic info for filtering if needed
+
+        // 🔹 Attach topic info for context (e.g. room/device ID)
+        data['topic'] = topic;
+
+        // 🔹 Ensure new schema fields exist (defaults = 0)
+        data['temperature'] ??= 0.0;
+        data['humidity'] ??= 0.0;
+        data['power_usage'] ??= 0.0;
+        data['occupancy'] ??= 0;
+        data['seat_hogged'] ??= 0;
+
         print('📡 [MQTT] Received: $data');
         _controller.add(data);
       } catch (e) {
-        print('⚠️ Error decoding JSON: $e');
+        print('⚠️ Error decoding JSON: $e | Raw payload: $payload');
       }
     });
   }
 
-  // 🔹 Publish messages to IoT
+  // 🔹 Publish messages to IoT devices
   void publish(String topic, Map<String, dynamic> payload) {
     if (client.connectionStatus?.state != MqttConnectionState.connected) {
       print("⚠️ MQTT not connected — cannot publish");
       return;
     }
+
     final builder = MqttClientPayloadBuilder();
     builder.addUTF8String(jsonEncode(payload));
     client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
