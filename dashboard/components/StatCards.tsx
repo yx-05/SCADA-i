@@ -1,5 +1,5 @@
 // components/StatCards.tsx
-
+"use client"
 import React from 'react';
 import { useMqtt } from '@/context/MqttContext';
 

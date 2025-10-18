@@ -23,7 +23,7 @@ from GenerateData import GenerateData
 # Configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # MQTT
-MQTT_BROKER_ADDRESS = "192.168.0.9" # FLAG! need to set to the real address
+MQTT_BROKER_ADDRESS = "192.168.0.105" # FLAG! need to set to the real address
 MQTT_TOPIC = "room/+/device/+/sensor"
 # SQLite DB
 SQLITE_ADDRESS = os.path.join(BASE_DIR, "Database", "BackendDatabase.db")
