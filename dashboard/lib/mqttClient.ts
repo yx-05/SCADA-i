@@ -11,10 +11,8 @@ export function getMqttClient(): MqttClient {
             console.log('MQTT Connected');
             client?.subscribe('room/+/device/+/sensor', (err) => {
                 if (err) console.error('Subscription error:', err);
-                else console.log('Subscribed successfully');
+                else console.log('Subscribed to device successfully');
             });
-
-            // client?.subscribe('room/room1/device/1/sensor'); // change this
         });
 
         client.on('error', (err) => {

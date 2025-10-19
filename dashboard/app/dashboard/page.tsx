@@ -90,7 +90,6 @@ export default async function DashboardPage() {
 
                 {/* Final Device Bar Chart - PASS LIVE DEVICE ARRAY */}
                 <DeviceOverview devices={stats.devices} />
-                
             </main>
         </div>
     );

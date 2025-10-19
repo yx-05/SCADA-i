@@ -48,7 +48,7 @@ const handleToggle = (id: number) => {
           const newToggled = !control.toggled;
 
           // 🟢 Publish MQTT command here
-          const topic = `building/main/device/${id}/control`;
+          const topic = `room/1/manual_override/response`;
           const payload = {
             deviceId: id,
             name: control.name,

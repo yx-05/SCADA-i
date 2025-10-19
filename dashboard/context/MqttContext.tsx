@@ -7,9 +7,10 @@ import { getMqttClient } from '../lib/mqttClient';
 interface MqttContextType {
   sensorData: SensorMessage | null;
   totalOccupancy: number;
+  publish: (topic: string, message: object | string) => void;
 }
 
-const MqttContext = createContext<MqttContextType>({ sensorData: null, totalOccupancy: 0});
+const MqttContext = createContext<MqttContextType>({ sensorData: null, totalOccupancy: 0, publish: () => { } });
 
 // Map to store each device data
 const sensorDataMap = new Map<string, SensorMessage>();
@@ -19,7 +20,6 @@ export const MqttProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [totalOccupancy, setTotalOccupancy] = useState(0);
 
   useEffect(() => {
-
 
     const client = getMqttClient();
 
@@ -62,9 +62,19 @@ export const MqttProvider: React.FC<{ children: React.ReactNode }> = ({ children
       client.off('message', messageHandler);
     };
   }, []); // Empty dependency array is correct
-
+  const publish = (topic: string, message: object | string) => {
+    const client = getMqttClient();
+    const payload = typeof message === 'string' ? message : JSON.stringify(message);
+    client.publish(topic, payload, (err) => {
+      if (err) {
+        console.error("MQTT publish error:", err);
+      } else {
+        console.log(`MQTT published to ${topic}:`, payload);
+      }
+    });
+  };
   return (
-    <MqttContext.Provider value={{ sensorData, totalOccupancy }}>
+    <MqttContext.Provider value={{ sensorData, totalOccupancy, publish }}>
       {children}
     </MqttContext.Provider>
   );

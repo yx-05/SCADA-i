@@ -32,7 +32,7 @@ class Database():
                 VALUES (?, ?, ?, ?, ?, ?)
             """, (
                     device_id,
-                    str(datetime.now()),
+                    datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     float(data.get("temperature", 0.0)),
                     float(data.get("humidity", 0.0)),        
                     int(data.get("occupancy", 0)),             
@@ -50,7 +50,7 @@ class Database():
                     power_usage=excluded.power_usage
             """, (
                     device_id,
-                    str(datetime.now()),
+                    datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     float(data.get("temperature", 0.0)),
                     float(data.get("humidity", 0.0)),        
                     int(data.get("occupancy", 0)),             
