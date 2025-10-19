@@ -1,26 +1,68 @@
 // components/Controls.tsx
 "use client";
 
-import { AirVent, Laptop, Lightbulb, Microwave } from 'lucide-react';
-import React, { useState } from 'react';
-import ToggleSwitch from './ToggleSwitch';
+import { AirVent, Laptop, Lightbulb, Microwave } from "lucide-react";
+import React, { useState } from "react";
+import ToggleSwitch from "./ToggleSwitch";
+import { useMqtt } from "@/context/MqttContext";
 
 const initialControlData = [
-  { id: 1, icon: AirVent, name: 'AC Units', status: '24/32 active • 3200W', toggled: true },
-  { id: 2, icon: Laptop, name: 'Computers', status: '23/60 active • 2350W', toggled: true },
-  { id: 3, icon: Lightbulb, name: 'Lights', status: '8/12 active • 220W', toggled: true },
-  { id: 4, icon: Microwave, name: 'Microwave', status: '0/1 active • 0W', toggled: false },
+  {
+    id: 1,
+    icon: AirVent,
+    name: "AC Units",
+    status: "24/32 active • 3200W",
+    toggled: true,
+  },
+  {
+    id: 2,
+    icon: Laptop,
+    name: "Computers",
+    status: "23/60 active • 2350W",
+    toggled: true,
+  },
+  {
+    id: 3,
+    icon: Lightbulb,
+    name: "Lights",
+    status: "8/12 active • 220W",
+    toggled: true,
+  },
+  {
+    id: 4,
+    icon: Microwave,
+    name: "Microwave",
+    status: "0/1 active • 0W",
+    toggled: false,
+  },
 ];
 
 const Controls = () => {
   const [controls, setControls] = useState(initialControlData);
+  const { publish } = useMqtt();
 
-  // Function to handle a toggle click
-  const handleToggle = (id: number) => {
+const handleToggle = (id: number) => {
     setControls(currentControls =>
-      currentControls.map(control =>
-        control.id === id ? { ...control, toggled: !control.toggled } : control
-      )
+      currentControls.map(control => {
+        if (control.id === id) {
+          const newToggled = !control.toggled;
+
+          // 🟢 Publish MQTT command here
+          const topic = `building/main/device/${id}/control`;
+          const payload = {
+            deviceId: id,
+            name: control.name,
+            toggled: newToggled,
+            timestamp: new Date().toISOString(),
+          };
+
+          publish(topic, payload);
+          console.log(`Published to ${topic}:`, payload);
+
+          return { ...control, toggled: newToggled };
+        }
+        return control;
+      })
     );
   };
 
@@ -38,8 +80,8 @@ const Controls = () => {
               </div>
             </div>
             {/* Pass the current state and the handler to the ToggleSwitch */}
-            <ToggleSwitch 
-              toggled={item.toggled} 
+            <ToggleSwitch
+              toggled={item.toggled}
               onClick={() => handleToggle(item.id)}
             />
           </div>
