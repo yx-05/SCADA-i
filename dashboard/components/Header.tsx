@@ -21,7 +21,7 @@ const Header = () => {
   const notificationsRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
 
-  const { sensorData } = useMqtt();
+  const { sensorData, totalOccupancy } = useMqtt();
 
   useClickOutside(notificationsRef, () => setIsNotificationsOpen(false));
   useClickOutside(settingsRef, () => setIsSettingsOpen(false));

@@ -3,6 +3,8 @@
 
 import { User } from 'lucide-react';
 import clsx from 'clsx';
+import { useMqtt } from "@/context/MqttContext"
+import { useEffect, useState } from 'react';
 
 type SeatStatus = 'Available' | 'Occupied' | 'Seat Hogging';
 
@@ -21,12 +23,12 @@ type Table = {
 };
 
 
-const seats: Seat[] = [
+const baseSeats: Seat[] = [
   // Row A
   { id: 'A01', row: 'A', status: 'Available', position: { top: '54%', left: '9%' } },
   { id: 'A02', row: 'A', status: 'Seat Hogging', position: { top: '43%', left: '13%' } },
-  { id: 'A03', row: 'A', status: 'Occupied', position: { top: '32%', left: '17%' } }, 
-  { id: 'A04', row: 'A', status: 'Available', position: { top: '20%', left: '21%' } }, 
+  { id: 'A03', row: 'A', status: 'Occupied', position: { top: '32%', left: '17%' } },
+  { id: 'A04', row: 'A', status: 'Available', position: { top: '20%', left: '21%' } },
 
   // Row B
   { id: 'B01', row: 'B', status: 'Available', position: { top: '60%', left: '25%' } },
@@ -34,7 +36,7 @@ const seats: Seat[] = [
   { id: 'B03', row: 'B', status: 'Available', position: { top: '92%', left: '31%' } },
   { id: 'B04', row: 'B', status: 'Occupied', position: { top: '80%', left: '73%' } },
   { id: 'B05', row: 'B', status: 'Available', position: { top: '67%', left: '77%' } },
-  
+
   // Row C
   { id: 'C01', row: 'C', status: 'Available', position: { top: '78%', left: '44%' } },
   { id: 'C02', row: 'C', status: 'Occupied', position: { top: '60%', left: '44%' } },
@@ -54,21 +56,21 @@ const tables: Table[] = [
   { id: 1, position: { top: '44%', left: '7%' }, rotation: -40, size: { width: '4%', height: '10%' } },
   { id: 2, position: { top: '32%', left: '11%' }, rotation: -40, size: { width: '4%', height: '10%' } },
   { id: 3, position: { top: '20%', left: '15%' }, rotation: -40, size: { width: '4%', height: '10%' } },
-  { id: 4, position: { top: '9%', left: '19%' }, rotation: -40, size: { width: '4%', height: '10%' } }, 
+  { id: 4, position: { top: '9%', left: '19%' }, rotation: -40, size: { width: '4%', height: '10%' } },
 
   // Row B
   { id: 5, position: { top: '74%', left: '25%' }, rotation: -142, size: { width: '11%', height: '10%' } },
   { id: 11, position: { top: '89%', left: '76%' }, rotation: -225, size: { width: '4%', height: '10%' } },
-  { id: 12, position: { top: '75%', left: '80%' }, rotation: -225, size: { width: '4%', height: '10%' } }, 
+  { id: 12, position: { top: '75%', left: '80%' }, rotation: -225, size: { width: '4%', height: '10%' } },
 
   //Row C
   { id: 6, position: { top: '58%', left: '49%' }, rotation: -48, size: { width: '11%', height: '10%' } },
 
   //Row D
   { id: 7, position: { top: '7%', left: '48%' }, rotation: 0, size: { width: '4%', height: '10%' } },
-  { id: 8, position: { top: '7%', left: '53%' }, rotation: 0, size: { width: '4%', height: '10%' } }, 
+  { id: 8, position: { top: '7%', left: '53%' }, rotation: 0, size: { width: '4%', height: '10%' } },
   { id: 9, position: { top: '14%', left: '75%' }, rotation: 40, size: { width: '4%', height: '10%' } },
-  { id: 10, position: { top: '26%', left: '79%' }, rotation: 40, size: { width: '4%', height: '10%' } }, 
+  { id: 10, position: { top: '26%', left: '79%' }, rotation: 40, size: { width: '4%', height: '10%' } },
 ];
 
 // Function to determine the color of the progress bar
@@ -125,12 +127,45 @@ const RowProgress = ({ title, stats }: { title: string; stats: { occupied: numbe
 };
 
 export default function OccupancyDisplay() {
+  const { sensorData, totalOccupancy } = useMqtt()
+  const [seats, setSeats] = useState<Seat[]>(baseSeats);
+
+
+  useEffect(() => {
+    if (!sensorData) return;
+
+    setSeats(prevSeats =>
+      prevSeats.map(seat => {
+        let newStatus = "Available";
+
+        // Check which device the data came from
+        if (sensorData.deviceId === "1" && seat.id === "D01") {
+
+          return {
+            ...seat,
+            status: (sensorData.occupancy ?? 0) > 0 ? "Occupied" : (sensorData.seat_hogged ?? 0) > 0 ? "Seat Hogging" : "Available",
+          };
+        }
+
+        if (sensorData.deviceId === "2" && seat.id === "D02") {
+          return {
+            ...seat,
+            status: (sensorData.occupancy ?? 0) > 0 ? "Occupied" : (sensorData.seat_hogged ?? 0) > 0 ? "Seat Hogging" : "Available",
+          };
+        }
+        // Default: no change
+        return seat;
+      })
+    );
+  }, [sensorData]);
+
+
   // --- AUTOMATIC CALCULATION LOGIC ---
   const rowStats = seats.reduce(
     (acc, seat) => {
       const rowKey = `row${seat.row}`;
       // Initialize if not present (only needed if rows were dynamic)
-      if (!acc[rowKey]) acc[rowKey] = { total: 0, occupied: 0, percentage: 0 }; 
+      if (!acc[rowKey]) acc[rowKey] = { total: 0, occupied: 0, percentage: 0 };
 
       acc[rowKey].total += 1;
       if (seat.status !== 'Available') {
@@ -162,10 +197,10 @@ export default function OccupancyDisplay() {
     // Main card container
     <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-md col-span-1 lg:col-span-2">
       <h3 className="font-semibold text-gray-800 text-xl mb-4 text-center">Occupancy (Digital Twin)</h3>
-      
+
       {/* Map Area */}
-      <div className className="relative w-full h-[400px] bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200">
-        
+      <div className="relative w-full h-[400px] bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200">
+
         {/* Render Tables */}
         {tables.map(table => (
           <div
@@ -182,7 +217,7 @@ export default function OccupancyDisplay() {
             TABLE
           </div>
         ))}
-        
+
         {/* Render Seats */}
         {seats.map(seat => (
           <div

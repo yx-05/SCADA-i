@@ -1,12 +1,13 @@
 export interface SensorData {
-  temperature: number;
-  outside_temp: number;
-  outside_humidity: number;
-  weather_condition: string;
-  ac_temp_setting: number;
-  power_usage: number;
+  temperature: number | null;
+  humidity: number | null;
   occupancy: number;
-  is_occupied: number;
-  timestamp: string;
-  phase: string;
+  power_usage: number | null;
+  seat_hogged: number | null;
+}
+
+export interface SensorMessage extends SensorData {
+  topic: string;
+  roomId: string;
+  deviceId: string;
 }

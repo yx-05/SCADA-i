@@ -3,13 +3,6 @@
 import React from 'react';
 import { useMqtt } from '@/context/MqttContext';
 
-const statData = [
-  { title: 'Carbon Level', value: '420', unit: 'ppm', color: 'bg-green-100', textColor: 'text-green-800' },
-  { title: 'Power Consumption', value: '6430', unit: 'W', color: 'bg-yellow-100', textColor: 'text-yellow-800' },
-  { title: 'Occupancy', value: '10/18', unit: '', color: 'bg-blue-100', textColor: 'text-blue-800' },
-  { title: 'Energy Saved Today', value: '2200', unit: 'W', color: 'bg-teal-100', textColor: 'text-teal-800' },
-];
-
 // 1. Define the "contract" for the props using an interface
 interface StatCardProps {
   title: string;
@@ -31,7 +24,46 @@ const StatCard = ({ title, value, unit, color, textColor }: StatCardProps) => (
 );
 
 const StatCards = () => {
-  const { sensorData } = useMqtt();
+  const { sensorData, totalOccupancy } = useMqtt();
+
+  // --- Safely extract values from sensorData ---
+  const carbonLevel = 420;      // e.g., CO2
+  const powerUsage = sensorData?.power_usage ?? 0;        // watts
+  const occupancy = totalOccupancy?? 0;          // number of people
+  const totalSeats = 18;                                 // Example static value
+  const energySaved = 2200;      // Example if included
+
+  const statData: StatCardProps[] = [
+    {
+      title: "Carbon Level",
+      value: carbonLevel.toString(),
+      unit: "ppm",
+      color: "bg-green-100",
+      textColor: "text-green-800",
+    },
+    {
+      title: "Power Consumption",
+      value: powerUsage.toString(),
+      unit: "W",
+      color: "bg-yellow-100",
+      textColor: "text-yellow-800",
+    },
+    {
+      title: "Occupancy",
+      value: `${occupancy}/${totalSeats}`,
+      unit: "",
+      color: "bg-blue-100",
+      textColor: "text-blue-800",
+    },
+    {
+      title: "Energy Saved Today",
+      value: energySaved.toString(),
+      unit: "W",
+      color: "bg-teal-100",
+      textColor: "text-teal-800",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {statData.map((stat, index) => (

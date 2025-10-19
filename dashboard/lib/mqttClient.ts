@@ -5,7 +5,7 @@ let client: MqttClient | null = null;
 export function getMqttClient(): MqttClient {
     if (!client) {
         // Connect only once
-        client = mqtt.connect('ws://192.168.0.105:8083/mqtt'); //change this
+        client = mqtt.connect('ws://127.0.0.1:8083/mqtt'); //change this
 
         client.on('connect', () => {
             console.log('MQTT Connected');
