@@ -38,6 +38,8 @@ const initialControlData = [
 ];
 
 const Controls = () => {
+const { publish } = useMqtt();
+
   const [controls, setControls] = useState(initialControlData);
   const { publish } = useMqtt();
 
