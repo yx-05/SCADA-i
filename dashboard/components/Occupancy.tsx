@@ -22,6 +22,19 @@ type Table = {
   size: { width: string; height: string };
 };
 
+// 1. Define the shape for a single row's statistics
+interface RowStats {
+  total: number;
+  occupied: number;
+  percentage: number;
+}
+
+// 2. Define the shape for the summary object using an INDEX SIGNATURE.
+//    This tells TypeScript: "This object can have any string as a key,
+//    and the value for that key will be a RowStats object."
+interface OccupancySummary {
+  [key: string]: RowStats;
+}
 
 const baseSeats: Seat[] = [
   // Row A
@@ -104,7 +117,7 @@ const StatusIcon = ({ status }: { status: SeatStatus }) => (
 );
 
 // Reusable component for the progress bars
-const RowProgress = ({ title, stats }: { title: string; stats: { occupied: number; total: number; percentage: number } }) => {
+const RowProgress = ({ title, stats }:  { title: string; stats: RowStats }) => {
   const colorClass = getProgressColor(stats.percentage);
 
   return (
@@ -127,7 +140,7 @@ const RowProgress = ({ title, stats }: { title: string; stats: { occupied: numbe
 };
 
 export default function OccupancyDisplay() {
-  const { sensorData, totalOccupancy } = useMqtt()
+  const { sensorData } = useMqtt()
   const [seats, setSeats] = useState<Seat[]>(baseSeats);
 
 
@@ -136,8 +149,6 @@ export default function OccupancyDisplay() {
 
     setSeats(prevSeats =>
       prevSeats.map(seat => {
-        let newStatus = "Available";
-
         // Check which device the data came from
         if (sensorData.deviceId === "1" && seat.id === "D01") {
 
@@ -159,12 +170,19 @@ export default function OccupancyDisplay() {
     );
   }, [sensorData]);
 
+  const initialSummary: OccupancySummary = {
+    rowA: { total: 0, occupied: 0, percentage: 0 },
+    rowB: { total: 0, occupied: 0, percentage: 0 },
+    rowC: { total: 0, occupied: 0, percentage: 0 },
+    rowD: { total: 0, occupied: 0, percentage: 0 },
+  };
 
   // --- AUTOMATIC CALCULATION LOGIC ---
-  const rowStats = seats.reduce(
-    (acc, seat) => {
+  const rowStats : OccupancySummary= seats.reduce(
+    (acc: OccupancySummary, seat: Seat) => {
       const rowKey = `row${seat.row}`;
-      // Initialize if not present (only needed if rows were dynamic)
+      
+      // THIS LINE IS NOW VALID because TypeScript understands `acc` can have any string key.
       if (!acc[rowKey]) acc[rowKey] = { total: 0, occupied: 0, percentage: 0 };
 
       acc[rowKey].total += 1;
@@ -173,12 +191,7 @@ export default function OccupancyDisplay() {
       }
       return acc;
     },
-    {
-      rowA: { total: 0, occupied: 0, percentage: 0 },
-      rowB: { total: 0, occupied: 0, percentage: 0 },
-      rowC: { total: 0, occupied: 0, percentage: 0 },
-      rowD: { total: 0, occupied: 0, percentage: 0 },
-    }
+    initialSummary // Use the typed initial value here
   );
 
   // Calculate percentages after counting totals
@@ -190,7 +203,7 @@ export default function OccupancyDisplay() {
         percentage: row.total > 0 ? (row.occupied / row.total) * 100 : 0,
       },
     ])
-  );
+  ) as OccupancySummary; // Add a type assertion for safety
 
 
   return (

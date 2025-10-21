@@ -21,6 +21,12 @@ interface PowerData {
     savings: number;       // (placeholder or calculated if needed)
 }
 
+interface ApiPowerRow {
+    timestamp: string;
+    power_usage: number;
+    // Add any other fields that come from the API
+}
+
 const PowerChart = () => {
     const [data, setData] = useState<PowerData[]>([]);
 
@@ -33,7 +39,7 @@ const PowerChart = () => {
                 const rows = await res.json();
 
                 // Transform DB rows into chart-friendly data
-                const formatted: PowerData[] = rows.map((row: any) => ({
+                const formatted: PowerData[] = rows.map((row: ApiPowerRow) => ({
                     name: new Date(row.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
                     consumption: row.power_usage,
                     savings: Math.max(0, 200 - row.power_usage) // placeholder
