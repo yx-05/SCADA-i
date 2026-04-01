@@ -119,7 +119,7 @@ import random
 import paho.mqtt.client as mqtt
 
 # ----------- MQTT Configuration -----------
-BROKER = "127.0.0.1"
+BROKER = "192.168.0.8"
 PORT = 1883
 TOPIC_T1 = "room/1/device/1/sensor"
 TOPIC_T2 = "room/1/device/2/sensor"
