@@ -11,11 +11,26 @@ class GenerateData:
     
     def generate_column(self, sensor_data):
         
-        # Getting current time
-        timestamp, hour_of_day, day_of_week, day_of_year = self._generate_time_features()
+        # Check if time features are provided in payload, otherwise generate them
+        if all(key in sensor_data for key in ["timestamp", "hour_of_day", "day_of_week", "day_of_year"]):
+            timestamp = sensor_data.get("timestamp")
+            hour_of_day = sensor_data.get("hour_of_day")
+            day_of_week = sensor_data.get("day_of_week")
+            day_of_year = sensor_data.get("day_of_year")
+            logging.info("Using time features from payload")
+        else:
+            timestamp, hour_of_day, day_of_week, day_of_year = self._generate_time_features()
+            logging.info("Generating time features locally")
         
-        # Get outside features from external api sources
-        outside_temp, outside_humidity, weather_condition = self._generate_outside_features()
+        # Check if outside features are provided in payload, otherwise fetch from API
+        if all(key in sensor_data for key in ["outside_temp", "outside_humidity", "weather_condition"]):
+            outside_temp = sensor_data.get("outside_temp")
+            outside_humidity = sensor_data.get("outside_humidity")
+            weather_condition = sensor_data.get("weather_condition")
+            logging.info("Using outside features from payload")
+        else:
+            outside_temp, outside_humidity, weather_condition = self._generate_outside_features()
+            logging.info("Fetching outside features from API")
         
         # Get occupancy features
         # FLAG! need to confirm on how occupancy would be counted. For now assume will get grom MQTT Broker
