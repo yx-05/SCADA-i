@@ -24,7 +24,7 @@ class MLService:
         
         self.data_generator = GenerateData()
         
-        # 1. Load the Scikit-Learn Models
+        # Load the Scikit-Learn Models
         try:
             self.fan_model = joblib.load(FAN_MODEL_PATH)
             self.temp_model = joblib.load(TEMP_MODEL_PATH)
@@ -49,28 +49,21 @@ class MLService:
 
     def _engineer_features(self, df):
         """
-        Applies the exact same feature engineering steps used during training
-        before passing the data to the model pipeline.
+        Applies the exact same feature engineering steps used during training.
         """
-        # 1. Peak Hour
         df["hour"] = pd.to_datetime(df["timestamp"]).dt.hour
         df["is_peak_hour"] = df["hour"].between(12, 17).astype(int)
         
-        # 2. Cyclical temporal features
         df['hour_sin'] = np.sin(2 * np.pi * df['hour_of_day'] / 24.0)
         df['hour_cos'] = np.cos(2 * np.pi * df['hour_of_day'] / 24.0)
         df['dayofweek_sin'] = np.sin(2 * np.pi * df['day_of_week'] / 7.0)
         df['dayofweek_cos'] = np.cos(2 * np.pi * df['day_of_week'] / 7.0)
         
-        # 3. Temperature Differences
         df['temp_diff'] = df['room_temp'] - df['outside_temp']
         
-        # Since set_point_diff requires ac_temp_setting, we use the current setting if provided,
-        # or default to 23.0 (a standard baseline) if it's a fresh start.
         current_ac_setting = df.get('ac_temp_setting', 23.0) 
         df['set_point_diff'] = df['room_temp'] - current_ac_setting
         
-        # 4. Select ONLY the columns the model was trained on
         columns_to_use = [
             'room_temp', 'outside_temp', 'weather_condition', 'is_peak_hour',
             'temp_diff', 'set_point_diff', 'hour_sin', 'hour_cos',
@@ -86,28 +79,54 @@ class MLService:
             
             logging.info(f"📩 Received sensor data: Temp={sensor_data.get('temperature')}C, Occ={sensor_data.get('occupancy')}")
 
-            # Empty room override (Save compute power)
+            # Empty room override 
             if sensor_data.get("occupancy", 0) == 0:
                 self.publish_action(fan_speed=0, target_temp=0.0)
                 logging.info("Room is empty. Action: AC OFF.")
                 return
 
             if self.fan_model and self.temp_model:
-                # 1. Generate base data
+                
+                # =========================================================
+                # INJECTION BLOCK (Fixes GenerateData.py without editing it)
+                # =========================================================
+                
+                # 1. Fix the power usage key mismatch
+                if "ac_power_usage" in sensor_data and "power_usage" not in sensor_data:
+                    sensor_data["power_usage"] = sensor_data["ac_power_usage"]
+                elif "power_usage" not in sensor_data:
+                    sensor_data["power_usage"] = 0.0
+                    
+                # 2. Force weather/time keys to exist so GenerateData skips the API calls
+                fallback_defaults = {
+                    "outside_temp": 28.0,
+                    "outside_humidity": 75.0,
+                    "weather_condition": "cloudy",
+                    "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                    "hour_of_day": 12,
+                    "day_of_week": 0,
+                    "day_of_year": 1
+                }
+                for key, default_val in fallback_defaults.items():
+                    if key not in sensor_data:
+                        sensor_data[key] = default_val
+
+                # =========================================================
+
+                # Generate base data using the unmodified GenerateData class
                 base_df = self.data_generator.generate_column(sensor_data)
                 
-                # 2. Engineer the specific features for the model
+                # Engineer features
                 features_df = self._engineer_features(base_df)
                 
-                # 3. Run Predictions
-                # predict() returns an array, so we grab the first item [0]
+                # Run Predictions
                 pred_fan_encoded = self.fan_model.predict(features_df)[0]
                 pred_temp = self.temp_model.predict(features_df)[0]
                 
-                # 4. Map the fan output to Unity
+                # Map fan output
                 mapped_fan_speed = self._map_fan_speed(pred_fan_encoded)
                 
-                # 5. Send command to Unity
+                # Send command
                 self.publish_action(fan_speed=mapped_fan_speed, target_temp=pred_temp)
                 logging.info(f"🤖 ML Predicted Action: Fan={mapped_fan_speed} (Raw: {pred_fan_encoded}), Temp={pred_temp:.1f}C")
 
@@ -119,8 +138,6 @@ class MLService:
     def _map_fan_speed(self, encoded_speed):
         """
         Maps the notebook's label encoding back to Unity's FanSpeed Enum.
-        Notebook mapping: {0:high, 1:low, 2:medium, 3:off, 4:on}
-        Unity mapping: {0:Off, 1:Low, 2:Medium, 3:High}
         """
         mapping = {
             0: 3, # Model High -> Unity High
@@ -129,10 +146,9 @@ class MLService:
             3: 0, # Model Off -> Unity Off
             4: 1  # Model "On" -> Default to Unity Low if generic
         }
-        return mapping.get(encoded_speed, 0) # Default to off if unknown
+        return mapping.get(encoded_speed, 0)
 
     def publish_action(self, fan_speed: int, target_temp: float):
-        # We omit the 'mode' key so Unity knows it is an ML automated command
         action_payload = {
             "fanSpeed": fan_speed,
             "acTempSetting": round(float(target_temp), 1)
